@@ -1,2 +1,4 @@
 # Sabre
- Sound driver for NES homebrew projects
+ Lightweight NES sound driver
+ 
+ TO-DO: Write full description
