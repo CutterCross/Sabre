@@ -21,6 +21,7 @@ doHandleButtonScripts:
         ;; Reset track stop status
         LDA #0
         STA trackRestartStatus
+        STA maxCPUscanlines
 endRightInput_pressed:
     LDA #%00000010
     ;;;;;;;; LEFT PRESSED ;;;;;;;;;;
@@ -37,6 +38,7 @@ endRightInput_pressed:
         ;; Reset track stop status
         LDA #0 
         STA trackRestartStatus
+        STA maxCPUscanlines
 endLeftInput_pressed:
     LDA #%00000100
     ;;;;;;;;; DOWN PRESSED ;;;;;;;;;

@@ -18,14 +18,6 @@ SHADOW_OAM = $0200
 		temp1				.dsb 1
 		temp2				.dsb 1
 		temp3				.dsb 1
-		temp4				.dsb 1
-		temp5				.dsb 1
-		temp6				.dsb 1
-		temp7				.dsb 1
-		tempA				.dsb 1
-		tempB				.dsb 1
-		tempC				.dsb 1
-		tempD				.dsb 1
 		temp16				.dsb 2
 		currentPRGbank		.dsb 1
 		curCPUscanlines		.dsb 1
