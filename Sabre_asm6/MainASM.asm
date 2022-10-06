@@ -42,7 +42,12 @@
 ;; $C000 Subroutines
 	.include "GameEngineData\c000_subroutines.asm"
 	.pad $F000	;; Nice visual way to see engine size in NESsc
+.ifndef UNOFFICIAL_OPS
+	.include "GameEngineData\sabre.asm"
+.endif
+.ifdef UNOFFICIAL_OPS 
 	.include "GameEngineData\sabre_uo.asm"
+.endif
 ;;=========================
 ;; Vectors
     .include "GameEngineData\vectors.asm"

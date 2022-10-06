@@ -1,5 +1,8 @@
 ;;;; SABRE constants ;;;;
 
+;; Comment out if not using unofficial opcodes
+UNOFFICIAL_OPS = 1
+
 ;;;; Notes / periods
 A0  = 0
 AS0 = 1
