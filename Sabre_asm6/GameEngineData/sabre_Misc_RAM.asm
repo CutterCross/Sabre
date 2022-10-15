@@ -39,6 +39,7 @@
 	channelArpEnvelopeStep		.dsb 8
 	channelPitchEnvelopeStep	.dsb 6
 	channelDutyEnvelopeStep		.dsb 4
+	noiseDutyEnvelopeStep		.dsb 2
 	channelBaseNote 			.dsb 9
 	channelLastArpNote			.dsb 9
 	
@@ -53,6 +54,6 @@
 	currentSFX					.dsb 1
 	currentTrackPRGbank			.dsb 1
 
-	;; 115 bytes non-ZP 
+	;; 117 bytes non-ZP 
 	
 	

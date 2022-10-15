@@ -4,7 +4,7 @@
 sabre_maxTracks:
 	.db 2
 sabre_maxSFX:
-	.db 2
+	.db 0
 
 ;;;; Track pointers + PRG bank number
 trackHeaderTable_lo:
@@ -208,8 +208,8 @@ _Intermission1_noise:
 	.dw _Intermission1_noise_pattern0
 	.dw _Intermission1_noise_pattern0
 _Intermission1_noise_pattern0:
-	.db NL4,INST|CONT|7,$F^$F,NL2,INST|6,NL4,$D^$F,NL2,$F^$F,$D^$F,$F^$F
-	.db NL4,INST|CONT|7,$F^$F,NL2,INST|6,NL4,$D^$F,NL2,$F^$F,$D^$F,$F^$F,D00 
+	.db NL4,INST|CONT|7,$F,NL2,INST|6,NL4,$D,NL2,$F,$D,$F
+	.db NL4,INST|7,NL2,INST|6,NL4,$D,NL2,$F,$D,$F,D00 
 
 _Intermission1_dmc:
 	.dw _Intermission1_dmc_pattern0

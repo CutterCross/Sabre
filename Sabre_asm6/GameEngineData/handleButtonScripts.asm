@@ -8,6 +8,8 @@ doHandleButtonScripts:
     ;;;;;;;; RIGHT PRESSED ;;;;;;;;;
     BIT pressed_gamepad
     BEQ endRightInput_pressed
+        BIT gamepad 
+        BVS +holdingB
         ;; Increment track
         LDA currentTrack
         CLC
@@ -22,16 +24,30 @@ doHandleButtonScripts:
         LDA #0
         STA trackRestartStatus
         STA maxCPUscanlines
+        JMP endRightInput_pressed
+    +holdingB:
+        ;; Increment SFX index, but don't play it
+        LDA currentSFX 
+        CLC 
+        ADC #1
+        CMP sabre_maxSFX 
+        BCC +
+            LDA #0
+        +
+        STA currentSFX
 endRightInput_pressed:
     LDA #%00000010
     ;;;;;;;; LEFT PRESSED ;;;;;;;;;;
     BIT pressed_gamepad
     BEQ endLeftInput_pressed
+        BIT gamepad 
+        BVS +holdingB
         ;; Decrement track
         LDA currentTrack
         BNE +
             LDA sabre_maxTracks
             STA currentTrack
+            BEQ endLeftInput_pressed
         +
         DEC currentTrack
         JSR sabre_playTrack
@@ -39,6 +55,16 @@ endRightInput_pressed:
         LDA #0 
         STA trackRestartStatus
         STA maxCPUscanlines
+        JMP endLeftInput_pressed
+    +holdingB:
+        ;; Decrement SFX index, but don't play it
+        LDA currentSFX 
+        BNE +
+            LDA sabre_maxSFX
+            STA currentSFX
+            BEQ endLeftInput_pressed
+        +
+        DEC currentSFX 
 endLeftInput_pressed:
     LDA #%00000100
     ;;;;;;;;; DOWN PRESSED ;;;;;;;;;
@@ -88,8 +114,6 @@ endSelectInput_pressed:
     ;;;;;;;;;; B PRESSED ;;;;;;;;;;;
     BIT pressed_gamepad
     BVC endB_Input_pressed
-        LDA #1
-        STA currentSFX
         JSR sabre_playSFX
 endB_Input_pressed:
     ;;;;;;;;;; A PRESSED ;;;;;;;;;;;

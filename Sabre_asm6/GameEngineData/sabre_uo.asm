@@ -35,6 +35,9 @@ sabre_registerInitTable:
 	.db $80,$00,$00,$00
 	.db $30,$00,$00,$00
 	.db $00,$00,$00,$00
+
+noisePeriodBitCheck:
+	.db %00010000
 	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -78,8 +81,13 @@ sabre_playTrack:
 	PHA
 	TYA 
 	PHA
-	;; Get all info from track header
+	;; Check if this track index is valid
 	LDY currentTrack
+	CPY sabre_maxTracks
+	BCC +
+		JMP endPlayTrack
+	+
+	;; Get all info from track header
 	LDA trackHeaderTable_lo,y 
 	STA pointer16 
 	LDA trackHeaderTable_hi,y
@@ -87,7 +95,6 @@ sabre_playTrack:
 	LDA trackTable_PRGbank,y 
 	STA currentTrackPRGbank
 	LDY #0
-	STY trackCurrentPattern
 	LDA #$FF 
 	SEC
 	BIT soundRegion		;; Subtract 1 from track speed if PAL or Dendy
@@ -96,13 +103,23 @@ sabre_playTrack:
 	+
 	ADC (pointer16),y 
 	STA trackSpeed  
-	STY trackFrameTimer 
-	STY channelInstrument		;; Set channel instruments to 0 / silent
-	STY channelInstrument+2
-	STY channelInstrument+4
-	STY channelInstrument+6
-	STY channelInstrument+8
-	INY
+	TYA
+	STA trackCurrentPattern
+	STA trackFrameTimer 
+	LDY #8
+	-
+	;; Zero out instruments and envelope steps
+	STA channelInstrument,y 
+	STA channelVolEnvelopeStep,y 
+	STA channelArpEnvelopeStep,y
+	STA channelPitchEnvelopeStep,y 
+	DEY 
+	DEY 
+	BPL -
+	STA channelDutyEnvelopeStep+2
+	STA noiseDutyEnvelopeStep
+
+	LDY #1
 	STY channelNoteCountdown	;; Set 1 to channel countdown timers	
 	STY channelNoteCountdown+2	;; So starting note will occur on next tick
 	STY channelNoteCountdown+4
@@ -133,11 +150,14 @@ setChannelTrackAddresses:
 	STA $4011
 	LDA #$80
 	STA apuShadow4008
+	STA apuLast4003
+	STA apuLast4007
 	;; Initialize DMC
 	LDA #1
 	STA dmcStatus
 	LDA #%00001111
 	STA $4015
+endPlayTrack:
 	PLA 
 	TAY
 	PLA 
@@ -151,8 +171,11 @@ sabre_playSFX:
 	PHA
 	TYA 
 	PHA 
-	;; Get all info from track header
+	;; Check if this SFX index is valid
 	LDY currentSFX
+	CPY sabre_maxSFX
+	BCS endPlaySFX
+	;; Get all info from track header
 	LDA sfxHeaderTable_lo,y 
 	STA pointer16 
 	LDA sfxHeaderTable_hi,y
@@ -166,12 +189,22 @@ sabre_playSFX:
 	+
 	ADC (pointer16),y 
 	STA SFXspeed
-	STY SFXframeTimer
-	STY channelInstrument+1		;; Set channel instruments to 0 / silent
-	STY channelInstrument+3
-	STY channelInstrument+5
-	STY channelInstrument+7
-	INY 
+	TYA
+	STA SFXframeTimer
+	LDY #7
+	-
+	;; Zero out instruments and envelope steps [SFX]
+	STA channelInstrument,y 
+	STA channelVolEnvelopeStep,y 
+	STA channelArpEnvelopeStep,y
+	STA channelPitchEnvelopeStep,y 
+	DEY 
+	DEY 
+	BPL -
+	STA channelDutyEnvelopeStep+3
+	STA noiseDutyEnvelopeStep+1
+
+	LDY #1 
 	STY channelNoteCountdown+1	;; Set 1 to channel countdown timers
 	STY channelNoteCountdown+3	;; So starting note will occur on next tick
 	STY channelNoteCountdown+5
@@ -190,6 +223,13 @@ setChannelSFXaddresses:
 	AXS #252
 	CPY #9
 	BCC setChannelSFXaddresses
+	;; Silence all SFX channels 
+	LDA #0
+	STA apuSFX4000
+	STA apuSFX4004
+	STA apuSFX4008
+	STA apuSFX400C
+endPlaySFX:
 	PLA 
 	TAY 
 	PLA 
@@ -318,21 +358,25 @@ setNoteDurationToCountdown:
 	BNE endProcessChannelRow
 		INC channel_patternOffsetAddr+1,x
 endProcessChannelRow:
+	LDA #0
 	CPY #8 
 	BCC +
 		;; Reset DMC state on new note
-		LDA #0
 		STA dmcStatus
 		JMP sabre_DMChandler
 	+
-	LDA #0
 	STA channelVolEnvelopeStep,y
 	STA channelArpEnvelopeStep,y
-	STA channelPitchEnvelopeStep,y
 	STA channelLastArpNote,y
-	CPY #2
+	CPY #6
+	BCC +
+		STA noiseDutyEnvelopeStep-6,y
+		BCS sabre_ProcessChannelEnvelopes
+	+
+	STA channelPitchEnvelopeStep,y
+	CPY #4 
 	BCS sabre_ProcessChannelEnvelopes
-	STA channelDutyEnvelopeStep,y
+		STA channelDutyEnvelopeStep,y
 	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -372,8 +416,9 @@ sabre_ProcessChannelEnvelopes:
 		;; Read next byte to get step to jump back to 
 		INY 
 		LDA (envelopeAddr),y 
-		STA channelVolEnvelopeStep,x 
 		TAY 
+		ADC #0
+		STA channelVolEnvelopeStep,x 
 		;; Read next data byte 
 		LDA (envelopeAddr),y 
 +skipLoopPoint:
@@ -396,24 +441,33 @@ sabre_ProcessChannelEnvelopes:
 		;; Read next byte to get step to jump back to 
 		INY
 		LDA (envelopeAddr),y 
-		STA channelArpEnvelopeStep,x 
 		TAY 
+		ADC #0
+		STA channelArpEnvelopeStep,x 
 		;; Read next data byte 
 		LDA (envelopeAddr),y
 +skipLoopPoint:
 	;; Add relative offset to base note 
 	CLC 
 	ADC channelBaseNote,x
+	CPX #6
+	BCC +notNoiseChannel
+		CMP channelLastArpNote,x 
+		BNE +
+			JMP endDutyEnvelope
+		+
+		;; Update new note period
+		STA channelLastArpNote,x
+		;; Use period index directly for noise channel
+		AND #$0F
+		EOR #$0F
+		STA apuShadow4002X,x 
+		JMP noiseDutyEnvelope
++notNoiseChannel:
 	CMP channelLastArpNote,x 
-	BEQ +endArpEnvelope
+	BEQ endArpEnvelope
 	;; Update new note period
 	STA channelLastArpNote,x
-	CPX #6
-	BCC +
-		;; Use period index directly for noise channel
-		STA apuShadow4002X,x 
-		JMP +endDutyEnvelope	;; Don't update pitch or duty envelopes
-	+
 	TAY 
 	LDA soundRegion
 	CMP #1
@@ -436,7 +490,7 @@ sabre_ProcessChannelEnvelopes:
 		LDA #0
 	+store4003X:
 		STA apuShadow4003X,x
-+endArpEnvelope:
+endArpEnvelope:
 
 	;;;; Update pitch envelope 
 	LDY #4
@@ -454,8 +508,9 @@ sabre_ProcessChannelEnvelopes:
 		;; Read next byte to get step to jump back to 
 		INY
 		LDA (envelopeAddr),y 
+		TAY
+		ADC #0
 		STA channelPitchEnvelopeStep,x 
-		TAY 
 		;; Read next data byte 
 +skipLoopPoint:
 	LDA (envelopeAddr),y
@@ -464,25 +519,25 @@ sabre_ProcessChannelEnvelopes:
 		;; Is subtraction 
 		ADC apuShadow4002X,x 
 		STA apuShadow4002X,x 
-		BCS +endPitchEnvelope
+		BCS endPitchEnvelope
 			LDA apuShadow4003X,x
-			BEQ +endPitchEnvelope
+			BEQ endPitchEnvelope
 			DEC apuShadow4003X,x
-			JMP +endPitchEnvelope
+			JMP endPitchEnvelope
 	+isAddition:
 		;; Is addition 
 		ADC apuShadow4002X,x
 		STA apuShadow4002X,x
-		BCC +endPitchEnvelope
+		BCC endPitchEnvelope
 			LDA apuShadow4003X,x 
-			CMP #8
-			BCS +endPitchEnvelope
+			CMP #7
+			BCS endPitchEnvelope
 			INC apuShadow4003X,x
-+endPitchEnvelope: 
+endPitchEnvelope: 
 
 	;;;; Update duty envelope [Pulse 1 and 2]
 	CPX #4
-	BCS +endDutyEnvelope
+	BCS endDutyEnvelope
 		LDY #6
 		LDA (instrumentAddr),y 
 		STA envelopeAddr
@@ -498,15 +553,46 @@ sabre_ProcessChannelEnvelopes:
 			;; Read next byte to get step to jump back to 
 			INY
 			LDA (envelopeAddr),y 
+			TAY
+			ADC #0
 			STA channelDutyEnvelopeStep,x 
-			TAY 
 			;; Read next data byte 
 			LDA (envelopeAddr),y
 	+skipLoopPoint: 
 		ASL 
 		ORA apuShadow4000X,x 
 		STA apuShadow4000X,x
-+endDutyEnvelope:	
+		JMP endDutyEnvelope
+
+noiseDutyEnvelope:
+	;;;; Update noise duty/mode [special case]
+	LDY #6
+	LDA (instrumentAddr),y 
+	STA envelopeAddr
+	INY 
+	LDA (instrumentAddr),y 
+	STA envelopeAddr+1
+	;; Get value offset into envelope and update shadow APU register
+	LDY noiseDutyEnvelopeStep-6,x 
+	INC noiseDutyEnvelopeStep-6,x 
+	LDA (envelopeAddr),y 
+	CMP #ENV_LOOP 
+	BNE +skipLoopPoint 
+		;; Read next byte to get step to jump back to 
+		INY
+		LDA (envelopeAddr),y 
+		TAY
+		ADC #0
+		STA noiseDutyEnvelopeStep-6,x 
+		;; Read next data byte 
+		LDA (envelopeAddr),y
++skipLoopPoint: 
+	ASL 
+	ASL
+	ORA apuShadow4002X,x 
+	STA apuShadow4002X,x
+
+endDutyEnvelope:	
 	LAX sabreTemp 
 	LSR 
 	TAY 
@@ -679,6 +765,8 @@ sabre_stopTrack:
 	LDY #17
 	-
 	STA channel_trackAddr,y 
+	STA channelVolEnvelopeStep,y
+	STA channelPitchEnvelopeStep,y
 	DEY 
 	BPL -
 	;; Clear volume registers
@@ -738,6 +826,11 @@ op_D00:
 	ASL 
 	TAY 
 	JSR setChannelPatternAddresses
+	LDA #1
+	STA channelNoteCountdown+2
+	STA channelNoteCountdown+4
+	STA channelNoteCountdown+6
+	STA channelNoteCountdown+8
 	LDY sabreTemp 
 	JMP getNextPatternByte
 
@@ -748,6 +841,11 @@ op_BXX:
 	ASL
 	TAY 
 	JSR setChannelPatternAddresses
+	LDA #1
+	STA channelNoteCountdown+2
+	STA channelNoteCountdown+4
+	STA channelNoteCountdown+6
+	STA channelNoteCountdown+8
 	LDY sabreTemp 
 	JMP getNextPatternByte
 

@@ -300,40 +300,34 @@ updateParameterInfo:
 	TEXT_BASE = $A0
 	CHANNEL_ENABLED_TILE = $1E
 	CHANNEL_DISABLED_TILE = $1D
+	;;;; Set current Track number
+	LDA #$21
+	STA $2006
+	LDA #$B0 
+	STA $2006
+	LDA currentTrack
+	JSR updateByteDecimalNumberNAM
+	;;;; Set current SFX number
+	LDA #$21
+	STA $2006
+	LDA #$B8
+	STA $2006
+	LDA currentSFX
+	JSR updateByteDecimalNumberNAM
 	;;;; Set Current CPU Scanline usage
 	LDA #$21
 	STA $2006 
 	LDA #$48
 	STA $2006
 	LDA curCPUscanlines
-	JSR convertToBase10_digits
-	LDA temp3
-	CLC 
-	ADC #TEXT_BASE
-	STA $2007
-	LDA temp2 
-	ADC #TEXT_BASE 
-	STA $2007 
-	LDA temp1
-	ADC #TEXT_BASE 
-	STA $2007
+	JSR updateByteDecimalNumberNAM
 	;;;; Set Max CPU Scanline usage
 	LDA #$21 
 	STA $2006 
 	LDA #$59 
 	STA $2006 
 	LDA maxCPUscanlines
-	JSR convertToBase10_digits
-	LDA temp3
-	CLC 
-	ADC #TEXT_BASE
-	STA $2007
-	LDA temp2 
-	ADC #TEXT_BASE 
-	STA $2007 
-	LDA temp1
-	ADC #TEXT_BASE 
-	STA $2007
+	JSR updateByteDecimalNumberNAM
 	;;;; Set channel volume meters
 	LDA #$22
 	STA $2006
@@ -427,37 +421,51 @@ updateParameterInfo:
 	RTS
 
 loop_soundEquUpdateTiles:
-    ALR #%00001111
-    TAX 
-    INX
-    LDY #8
-    LDA #$0B
-    -
-    DEX 
-    BEQ +
-    STA $2007
-    DEY 
-    BNE -
-    +
-    BCC +
-    LDA #$0C 
-    STA $2007
-    DEY 
-    +
-    DEY 
-    BEQ +
-    LDA #$0D
-    -
-    STA $2007
-    DEY 
-    BNE -
-    +
-    RTS
+	ALR #$0F 
+	TAX 
+	LDY #8
+	LDA #$0B
+-drawDoubleUnits:
+	DEX 
+	BMI +endDoubleUnits
+	STA $2007
+	DEY 
+	BNE -drawDoubleUnits
+	RTS
++endDoubleUnits:
+	BCC +skipSingleUnit
+	LDA #$0C 
+	STA $2007
+	DEY 
+	BEQ +return 
++skipSingleUnit:
+	LDA #$0D
+-drawEmptyUnits:
+	STA $2007
+	DEY 
+	BNE -drawEmptyUnits
++return:
+	RTS
+
+updateByteDecimalNumberNAM:
+	JSR convertToBase10_digits
+	LDA temp3
+	CLC 
+	ADC #TEXT_BASE
+	STA $2007
+	LDA temp2 
+	ADC #TEXT_BASE 
+	STA $2007 
+	LDA temp1
+	ADC #TEXT_BASE 
+	STA $2007
+	RTS
 
 .include "GameEngineData\handleInputs.asm"
 .include "GameEngineData\handleButtonScripts.asm"
 	
 .include "GameEngineData\PPU_DATA\SABRE_soundTest_NAM_ATT.asm"
 .include "GameEngineData\PPU_DATA\SABRE_soundTest_PAL.asm"
+
 .align 64
 .include "sabre_dpcm.asm"
