@@ -202,6 +202,15 @@ class Track:
 			"noise": [],
 			"DMC": []
 		}
+		try:
+			self.group_hex = int(self.group, base=16)
+		except ValueError:
+			self.group_hex = 0
+		if self.group_hex == 0 or self.group_hex >= 256:
+			if self.group not in ["sfx", "default"]:
+				self.name = '_'.join([self.group, self.name])
+				self.group = "default"
+			self.group_hex = 0
 
 	def add_order(self, p1:int, p2:int, tri:int, noi:int, dmc:int):
 		self.frames += 1
@@ -316,6 +325,13 @@ class Music:
 				tracks.append(track)
 		return tracks
 
+	def get_nonsfx_tracks(self) -> "list[Track]":
+		tracks = []
+		for track in self.tracks:
+			if track.group != "sfx":
+				tracks.append(track)
+		return tracks
+
 # read ft txt export and parse into Music object
 def read_ft_txt(filename:str):
 	music_data = Music()
@@ -422,7 +438,7 @@ def read_ft_txt(filename:str):
 				track_name = m.group(1)
 
 				if "_" in track_name:
-					group, track_name = track_name.split("_")
+					group, track_name = track_name.split("_",1)
 				else:
 					group = "default"
 
@@ -494,7 +510,7 @@ def write_asm(music_data:Music, filename:str):
 	for label in track_names:
 		static_buffer += f"\t.db >{label}_header\n"
 	static_buffer += "trackTable_PRGbank:\n\t.db "
-	static_buffer += ','.join(['$00']*track_count)
+	static_buffer += ','.join([f'${x.group_hex:02x}' for x in music_data.get_nonsfx_tracks()])
 	static_buffer += "\n\n"
 
 	static_buffer += "sfxHeaderTable_lo:\n"
