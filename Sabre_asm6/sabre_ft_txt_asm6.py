@@ -582,7 +582,7 @@ def write_asm(music_data:Music, filename:str):
 		f.write(static_buffer)
 
 	if len(music_data.samples) > 0:
-		dpcm_buffer = ""
+		dpcm_buffer = ".align 64\n"
 
 		for sample in music_data.samples:
 			dpcm_buffer += f"{sample.label()}:"
