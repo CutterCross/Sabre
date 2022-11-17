@@ -13,7 +13,9 @@ NOTE_LENGTHS = [
 	1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18,
 	20, 22, 24, 26, 28, 30, 32, 36, 40, 48, 64, 96, 128, 256
 ]
-SUPPORTED_EFFECTS = "DC"
+FX_SUPPORTED = "DCFBZ"
+FX_SAME_ROW = "DCB"
+FX_NO_VALUE = "DC"
 NOTE_NULL = "NUL"
 INST_SILENT = "SLNT"
 
@@ -100,7 +102,14 @@ class Row_data:
 		else:
 			note = ft_note_to_sabre(pattdata[0]) if pattdata[0] != "..." else None
 			inst = str(int(pattdata[1], base=16)+1) if pattdata[1] != ".." else None
-		effect = pattdata[3] if pattdata[3][0] in SUPPORTED_EFFECTS != "..." else None
+		effect = pattdata[3] if pattdata[3] != "..." else None
+
+		if effect:
+			if effect[0] not in FX_SUPPORTED:
+				effect = None
+			
+			if effect[0] not in FX_NO_VALUE:
+				effect = f"{effect[0]}XX,${effect[1:]}"
 
 		if note == None and inst == None:
 			note = NOTE_NULL
@@ -133,7 +142,7 @@ def compile_sabre_pattern(rows:"list[Row_data]", channel:str, sfx:bool = False) 
 		next_row = None
 		try:
 			next_row = rows[i+1]
-			if next_row.effect != None and next_row.inst == None and next_row.note == NOTE_NULL:
+			if (next_row.effect and next_row.effect[0] in FX_SAME_ROW) and next_row.inst == None and next_row.note == NOTE_NULL:
 				row.length += 1
 		except IndexError:
 			pass
@@ -162,15 +171,15 @@ def compile_sabre_pattern(rows:"list[Row_data]", channel:str, sfx:bool = False) 
 			else:
 				pattern.append("NLC")
 				pattern.append(str(row.length))
+		if row.effect != None:
+			pattern.append(row.effect)
 		if include_inst:
 			cont = "|CONT" if include_note else ""
 			pattern.append(f"INST{cont}|{row.inst}")
 		if include_note:
 			pattern.append(row.note)
-		if row.effect != None:
-			pattern.append(row.effect)
 
-		if next_row != None and (next_row.effect == "D00" or next_row.effect == "C00"):
+		if next_row != None and next_row.effect and (next_row.effect[0] in FX_SAME_ROW):
 			pattern.append(next_row.effect)
 			break
 	
