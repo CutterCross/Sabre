@@ -886,6 +886,10 @@ op_ZXX:
 	;; ZXX - Set direct DMC load counter [$4011] with next byte
 	LDA (channel_patternOffsetAddr,x)
 	STA $4011
+	INC channel_patternOffsetAddr,x 
+	BNE +
+		INC channel_patternOffsetAddr+1,x
+	+
 	LDY sabreTemp 
 	JMP getNextPatternByte
 

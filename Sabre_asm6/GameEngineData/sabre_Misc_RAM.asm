@@ -41,7 +41,7 @@
 	channelDutyEnvelopeStep		.dsb 4
 	noiseDutyEnvelopeStep		.dsb 2
 	channelBaseNote 			.dsb 9
-	channelLastArpNote			.dsb 9
+	channelLastArpNote			.dsb 8
 	
 	trackSpeed					.dsb 1	;; Number of frames between rows
 	SFXspeed					.dsb 1	;; Number of frames between rows
@@ -54,6 +54,6 @@
 	currentSFX					.dsb 1
 	currentTrackPRGbank			.dsb 1
 
-	;; 117 bytes non-ZP 
+	;; 116 bytes non-ZP 
 	
 	

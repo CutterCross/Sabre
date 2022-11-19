@@ -1,6 +1,7 @@
 SABRE Features List.txt
 Sabre_asm6/SabreUNROM_source.txt
 Sabre_ft_txt_conv/
+Sabre_ca65/
 *.nes
 *.mlb
 *.lua

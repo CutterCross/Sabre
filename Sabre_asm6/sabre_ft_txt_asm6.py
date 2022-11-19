@@ -11,8 +11,13 @@ NOTE_COUNT = 86
 
 NOTE_LENGTHS = [
 	1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18,
-	20,	22, 24, 26, 28, 30, 32, 36, 40, 48, 64, 96, 128, 256
+	20, 22, 24, 26, 28, 30, 32, 36, 40, 48, 64, 96, 128, 256
 ]
+FX_SUPPORTED = "DCFBZ"
+FX_SAME_ROW = "DCB"
+FX_NO_VALUE = "DC"
+NOTE_NULL = "NUL"
+INST_SILENT = "SLNT"
 
 EMPTY_ROW = "... .. . ..."
 
@@ -93,14 +98,21 @@ class Row_data:
 		pattdata = pattdata.split()
 		if pattdata[0] == "---":
 			note = None
-			inst = "SLNT"
+			inst = INST_SILENT
 		else:
 			note = ft_note_to_sabre(pattdata[0]) if pattdata[0] != "..." else None
 			inst = str(int(pattdata[1], base=16)+1) if pattdata[1] != ".." else None
 		effect = pattdata[3] if pattdata[3] != "..." else None
 
+		if effect:
+			if effect[0] not in FX_SUPPORTED:
+				effect = None
+			
+			if effect[0] not in FX_NO_VALUE:
+				effect = f"{effect[0]}XX,${effect[1:]}"
+
 		if note == None and inst == None:
-			note = "NUL"
+			note = NOTE_NULL
 
 		self.length = 1
 		self.note = note
@@ -111,9 +123,9 @@ class Row_data:
 		self.length += 1
 
 	def contains_note_data(self) -> bool:
-		if self.note != None and self.note != "NUL":
+		if self.note != None and self.note != NOTE_NULL:
 			return True
-		if self.inst != None and self.inst != "SLNT":
+		if self.inst != None and self.inst != INST_SILENT:
 			return True
 		if self.effect != None:
 			return True
@@ -130,7 +142,7 @@ def compile_sabre_pattern(rows:"list[Row_data]", channel:str, sfx:bool = False) 
 		next_row = None
 		try:
 			next_row = rows[i+1]
-			if next_row.effect != None and next_row.inst == None and next_row.note == "NUL":
+			if (next_row.effect and next_row.effect[0] in FX_SAME_ROW) and next_row.inst == None and next_row.note == NOTE_NULL:
 				row.length += 1
 		except IndexError:
 			pass
@@ -159,18 +171,15 @@ def compile_sabre_pattern(rows:"list[Row_data]", channel:str, sfx:bool = False) 
 			else:
 				pattern.append("NLC")
 				pattern.append(str(row.length))
+		if row.effect != None:
+			pattern.append(row.effect)
 		if include_inst:
 			cont = "|CONT" if include_note else ""
 			pattern.append(f"INST{cont}|{row.inst}")
 		if include_note:
-			#if channel == "noise":
-			#	pattern.append(f"{row.note}^$F")
-			#else:
 			pattern.append(row.note)
-		if row.effect != None:
-			pattern.append(row.effect)
 
-		if next_row != None and (next_row.effect == "D00" or next_row.effect == "C00"):
+		if next_row != None and next_row.effect and (next_row.effect[0] in FX_SAME_ROW):
 			pattern.append(next_row.effect)
 			break
 	
@@ -202,6 +211,15 @@ class Track:
 			"noise": [],
 			"DMC": []
 		}
+		try:
+			self.group_hex = int(self.group, base=16)
+		except ValueError:
+			self.group_hex = 0
+		if self.group_hex == 0 or self.group_hex >= 256:
+			if self.group not in ["sfx", "default"]:
+				self.name = '_'.join([self.group, self.name])
+				self.group = "default"
+			self.group_hex = 0
 
 	def add_order(self, p1:int, p2:int, tri:int, noi:int, dmc:int):
 		self.frames += 1
@@ -316,6 +334,13 @@ class Music:
 				tracks.append(track)
 		return tracks
 
+	def get_nonsfx_tracks(self) -> "list[Track]":
+		tracks = []
+		for track in self.tracks:
+			if track.group != "sfx":
+				tracks.append(track)
+		return tracks
+
 # read ft txt export and parse into Music object
 def read_ft_txt(filename:str):
 	music_data = Music()
@@ -422,7 +447,7 @@ def read_ft_txt(filename:str):
 				track_name = m.group(1)
 
 				if "_" in track_name:
-					group, track_name = track_name.split("_")
+					group, track_name = track_name.split("_",1)
 				else:
 					group = "default"
 
@@ -494,7 +519,7 @@ def write_asm(music_data:Music, filename:str):
 	for label in track_names:
 		static_buffer += f"\t.db >{label}_header\n"
 	static_buffer += "trackTable_PRGbank:\n\t.db "
-	static_buffer += ','.join(['$00']*track_count)
+	static_buffer += ','.join([f'${x.group_hex:02x}' for x in music_data.get_nonsfx_tracks()])
 	static_buffer += "\n\n"
 
 	static_buffer += "sfxHeaderTable_lo:\n"
@@ -566,7 +591,7 @@ def write_asm(music_data:Music, filename:str):
 		f.write(static_buffer)
 
 	if len(music_data.samples) > 0:
-		dpcm_buffer = ""
+		dpcm_buffer = ".align 64\n"
 
 		for sample in music_data.samples:
 			dpcm_buffer += f"{sample.label()}:"
@@ -604,10 +629,14 @@ def write_asm(music_data:Music, filename:str):
 
 if __name__ == "__main__":
 	if len(sys.argv) < 2:
-		print(f"Usage: {sys.argv[0]} <filename.txt>")
+		print(f"Usage: {sys.argv[0]} <filename.txt> [output prefix]")
 		sys.exit()
 	
 	filename, extension = os.path.splitext(sys.argv[1])
+
+	if len(sys.argv) > 2:
+		filename = sys.argv[2]
+
 	if extension.lower() != ".txt":
 		print("Input file must have txt extension")
 		sys.exit()
