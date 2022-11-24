@@ -369,7 +369,7 @@ setNoteDurationToCountdown:
 		INC channel_patternOffsetAddr+1,x
 endProcessChannelRow:
 	LDA #0
-	CPY #8 
+	CPY #CHANNEL_TRACK_DMC
 	BCC +
 		;; Reset DMC state on new note
 		STA dmcStatus
@@ -378,20 +378,20 @@ endProcessChannelRow:
 	STA channelVolEnvelopeStep,y
 	STA channelArpEnvelopeStep,y
 	STA channelLastArpNote,y
-	CPY #6
+	CPY #CHANNEL_TRACK_NOISE
 	BCC +
 		STA noiseDutyEnvelopeStep-6,y
 		BCS sabre_ProcessChannelEnvelopes
 	+
 	STA channelPitchEnvelopeStep,y
-	CPY #4 
+	CPY #CHANNEL_TRACK_TRIANGLE 
 	BCS sabre_ProcessChannelEnvelopes
 		STA channelDutyEnvelopeStep,y
 	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 sabre_ProcessChannelEnvelopes:
-	CPY #8
+	CPY #CHANNEL_TRACK_DMC
 	BCC +
 		;; Skip envelope handling for DMC
 		JMP sabre_DMChandler
@@ -460,7 +460,7 @@ sabre_ProcessChannelEnvelopes:
 	;; Add relative offset to base note 
 	CLC 
 	ADC channelBaseNote,x
-	CPX #6
+	CPX #CHANNEL_TRACK_NOISE
 	BCC +notNoiseChannel
 		CMP channelLastArpNote,x 
 		BNE +
@@ -480,7 +480,7 @@ sabre_ProcessChannelEnvelopes:
 	STA channelLastArpNote,x
 	TAY 
 	LDA soundRegion
-	CMP #1
+	CMP #REGION_PAL
 	BEQ +PAL
 		;; Use NTSC / DENDY period table
 		LDA NTSC_PTNperiodTable_lo,y 
@@ -546,7 +546,7 @@ endArpEnvelope:
 endPitchEnvelope: 
 
 	;;;; Update duty envelope [Pulse 1 and 2]
-	CPX #4
+	CPX #CHANNEL_TRACK_TRIANGLE
 	BCS endDutyEnvelope
 		LDY #6
 		LDA (instrumentAddr),y 
@@ -614,7 +614,7 @@ iterateNextSoundChannel:
 	INX 
 	INX 
 	INY
-	CPY #9
+	CPY #CHANNEL_TRACK_DMC+1
 	BCS sabre_DMChandler
 	TYA 
 	AND #%00000001

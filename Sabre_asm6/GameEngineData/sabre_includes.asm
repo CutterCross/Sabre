@@ -4,9 +4,21 @@
 ;UNOFFICIAL_OPS = 1
 
 ;;;; Sound region constants
-REGION_NTSC = 0
-REGION_PAL = 1
-REGION_DENDY = 2
+REGION_NTSC     = 0
+REGION_PAL      = 1
+REGION_DENDY    = 2
+
+;;;; Channel number constants 
+CHANNEL_TRACK_PULSE1    = 0
+CHANNEL_TRACK_PULSE2    = 2
+CHANNEL_TRACK_TRIANGLE  = 4
+CHANNEL_TRACK_NOISE     = 6
+CHANNEL_TRACK_DMC       = 8
+
+CHANNEL_SFX_PULSE1      = 1
+CHANNEL_SFX_PULSE2      = 3
+CHANNEL_SFX_TRIANGLE    = 5
+CHANNEL_SFX_NOISE       = 7
 
 ;;;; Notes / periods
 A0  = 0
@@ -97,8 +109,8 @@ A7  = 84
 AS7 = 85
 B7  = 86
 
-NOTE_CEILING = 87
-NOTE_LENGTHS_START = 97
+NOTE_CEILING        = 87
+NOTE_LENGTHS_START  = 97
 ;;;;;;;;;;;;;;;;;;;;
 
 ;;;; Control instructions
