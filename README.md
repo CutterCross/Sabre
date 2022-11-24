@@ -1,6 +1,8 @@
 # Sabre
  Sabre is a lightweight sound driver for NES homebrew projects, compatible with FamiTracker TXT data exported from FamiTracker and FamiStudio. 
  
+ Currently only written for ASM6.
+ 
 ## Features:
  - Note range: A0 - B7
  - All 5 2A03 channels supported for music (Pulse 1, Pulse 2, Triangle, Noise, DMC)
@@ -49,20 +51,21 @@
 ## FamiStudio Usage Guide:
  TODO
  
-## Converting with sabre\_ft\_txt\_{ver}.py: 
+## Converting with sabre\_ft\_txt\_asm6.py: 
  You must have Python installed in order to execute .py modules. Python 3.X and above are recommended.
  You can download the current version of Python from https://www.python.org/ 
  
  Drag your exported FT TXT file to sabre\_ft\_txt\_asm6.py. 
+ 
  Alternatively, you can run via the command line.
  ```
- python sabre_ft_txt_{ver}.py {filename}.txt	
+ python sabre_ft_txt_asm6.py {filename}.txt	
  ```
  Replace {filename} with the name of your exported FT txt file 
  
  If no files are created, there was likely a runtime error. Running via the command line can help list any errors that occur.
  
-#### After converting your FT TXT music file:
+### After converting your FT TXT music file:
  - {filename}\_static.asm: Include alongside sabre.asm. Contains LUTs, instruments, and SFX.
  - {filename}\_dpcm.asm: If this file is generated, include in a static PRG bank at $C000-$FFFF. Contains DPCM sample data.
  - {filename}\_{bankNo.}.asm: Include where you would like your track data to be stored. Contains track data in this group. 
@@ -80,14 +83,14 @@
  ```
  .enum $0100
  ;; ...
- .include "sabre_Misc_RAM".asm 
+ .include "sabre_Misc_RAM.asm"
  .ende
  ```
  - sabre.asm: Include where you would like the driver to be stored.
  
 ## Using Sabre:
 
-#### Initialization:
+### Initialization:
  In your program's initialization, store your desired region number into soundRegion and call sabre\_initAPU.
  - REGION_NTSC 
  - REGION_PAL
@@ -98,16 +101,18 @@
  JSR sabre_initAPU
  ```
  
-#### Updating:
+### Updating:
  Once per frame, you must call sabre\_soundUpdate. It's recommended, if possible, you do this near the end of your NMI routine so that lag frames won't affect music playback.
  ```
  JSR sabre_soundUpdate
  ```
  If you have tracks in multiple PRG banks and can freely access Sabre during bankswitching, load currentTrackPRGbank and use your bankswitch routine to swap in that bank before calling sabre_soundUpdate.
+ 
  Don't forget to swap the original PRG bank back in after the sound update!
  
-#### Playing tracks and SFX:
+### Playing tracks and SFX:
  The top of your exported {filename}\_static.asm file will contain a set of constants for each track and SFX index. 
+ 
  To play a track, store one of these constant track values into currentTrack, and then call sabre_playTrack:
  ```
  LDA #_default_track0
