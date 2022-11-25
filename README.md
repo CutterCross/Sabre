@@ -51,7 +51,7 @@
  You must have Python installed in order to execute .py modules. Python 3.X and above are recommended.
  You can download the current version of Python from https://www.python.org/ 
  
- Drag your exported FT TXT file to `sabre\_ft\_txt\_asm6.py`. 
+ Drag your exported FT TXT file to `sabre_ft_txt_asm6.py`. 
  
  Alternatively, you can run via the command line.
  ```
@@ -62,20 +62,20 @@
  If no files are created, there was likely a runtime error. Running via the command line can help list any errors that occur.
  
 ### After converting your FT TXT music file:
- - `{filename}\_static.asm`: Include alongside `sabre.asm`. Contains LUTs, instruments, and SFX.
- - `{filename}\_dpcm.asm`: If this file is generated, include in a static PRG bank at $C000-$FFFF. Contains DPCM sample data.
- - `{filename}\_{bankNo.}.asm`: Include where you would like your track data to be stored. Contains track data in this group. 
+ - `{filename}_static.asm`: Include alongside `sabre.asm`. Contains LUTs, instruments, and SFX.
+ - `{filename}_dpcm.asm`: If this file is generated, include in a static PRG bank at $C000-$FFFF. Contains DPCM sample data.
+ - `{filename}_{bankNo.}.asm`: Include where you would like your track data to be stored. Contains track data in this group. 
  
 ## Including Sabre (ASM6):
- - `sabre\_includes.asm`: Include at the top of your program, along with any other program constants you have defined.
- - `sabre\_ZP\_RAM.asm`: Include in your Zero Page RAM defines.
+ - `sabre_includes.asm`: Include at the top of your program, along with any other program constants you have defined.
+ - `sabre_ZP_RAM.asm`: Include in your Zero Page RAM defines.
  ```
  .enum $0000
  ;; ...
  .include "sabre_ZP_RAM.asm"
  .ende
  ```
- - `sabre\_Misc\_RAM.asm`: Include somewhere else in your RAM defines. 
+ - `sabre_Misc_RAM.asm`: Include somewhere else in your RAM defines. 
  ```
  .enum $0100
  ;; ...
@@ -86,12 +86,12 @@
  
 #### Differences between sabre.asm and sabre\_uo.asm:
  - `sabre.asm`: Use if your project does not use unofficial CPU opcodes.
- - `sabre\_uo.asm`: Uses unofficial CPU opcodes ANC {#imm}, AXS {#imm}, LAX {zp}, and DCP {abs,y}
+ - `sabre_uo.asm`: Uses unofficial CPU opcodes ANC {#imm}, AXS {#imm}, LAX {zp}, and DCP {abs,y}
  
 ## Using Sabre:
 
 ### Initialization:
- In your program's initialization, store your desired region value into `soundRegion`, and then call `sabre\_initAPU`.
+ In your program's initialization, store your desired region value into `soundRegion`, and then call `sabre_initAPU`.
  - `REGION_NTSC `
  - `REGION_PAL`
  - `REGION_DENDY`
@@ -102,7 +102,7 @@
  ```
  
 ### Updating:
- Once per frame, you must call `sabre\_soundUpdate`. It's recommended, if possible, you do this near the end of your NMI routine so that lag frames won't affect music playback.
+ Once per frame, you must call `sabre_soundUpdate`. It's recommended, if possible, you do this near the end of your NMI routine so that lag frames won't affect music playback.
  ```
  JSR sabre_soundUpdate
  ```
@@ -111,7 +111,7 @@
  Don't forget to swap the original PRG bank back in after the sound update!
  
 ### Playing tracks and SFX:
- The top of your exported `{filename}\_static.asm` file will contain a set of constants for each track and SFX index. 
+ The top of your exported `{filename}_static.asm` file will contain a set of constants for each track and SFX index. 
  
  To play a track, store one of these constant track values into `currentTrack`, and then call `sabre_playTrack`:
  ```
@@ -119,7 +119,7 @@
  STA currentTrack 
  JSR sabre_playTrack
  ```
- To play SFX, store one of these constant SFX values into `currentSFX`, and then call `sabre\_playSFX`:
+ To play SFX, store one of these constant SFX values into `currentSFX`, and then call `sabre_playSFX`:
  ```
  LDA #sfx_sfx0
  STA currentSFX
@@ -129,7 +129,7 @@
  ```
  JSR sabre_stopTrack 
  ```
- To pause music playback, call `sabre\_pauseTrack`. Call `sabre\_pauseTrack` again to unpause:
+ To pause music playback, call `sabre_pauseTrack`. Call `sabre_pauseTrack` again to unpause:
  ```
  JSR sabre_pauseTrack 
  ```
