@@ -16,6 +16,7 @@ NOTE_LENGTHS = [
 FX_SUPPORTED = "DCFBZ"
 FX_SAME_ROW = "DCB"
 FX_NO_VALUE = "DC"
+FX_PATTERN_ENDING = "DCB"
 NOTE_NULL = "NUL"
 INST_SILENT = "SLNT"
 
@@ -137,6 +138,7 @@ def compile_sabre_pattern(rows:"list[Row_data]", channel:str, sfx:bool = False) 
 	last_length = None
 	last_inst = None
 	last_note = None
+	finished_converting = False
 
 	for i,row in enumerate(rows):
 		next_row = None
@@ -164,6 +166,12 @@ def compile_sabre_pattern(rows:"list[Row_data]", channel:str, sfx:bool = False) 
 			include_note = True
 		if not include_length and not include_note and row.note != None:
 			include_note = True
+
+		if row.effect != None and row.effect[0] in FX_PATTERN_ENDING:
+			finished_converting = True
+			if row.note == NOTE_NULL and row.inst == None:
+				include_length = False
+				include_note = False
 		
 		if include_length:
 			if row.length in NOTE_LENGTHS:
@@ -172,23 +180,25 @@ def compile_sabre_pattern(rows:"list[Row_data]", channel:str, sfx:bool = False) 
 				pattern.append("NLC")
 				pattern.append(str(row.length))
 		if row.effect != None:
-			pattern.append(row.effect)
+			if sfx and row.effect[0] in FX_PATTERN_ENDING:
+				pattern.append("END_SFX")
+			else:
+				pattern.append(row.effect)
 		if include_inst:
 			cont = "|CONT" if include_note else ""
 			pattern.append(f"INST{cont}|{row.inst}")
 		if include_note:
 			pattern.append(row.note)
 
-		if next_row != None and next_row.effect and (next_row.effect[0] in FX_SAME_ROW):
-			pattern.append(next_row.effect)
+		if finished_converting:
 			break
-	
-	if rows[-1].effect == None:
+
+	if finished_converting == False:
 		if sfx:
 			pattern.append("END_SFX")
 		else:
 			pattern.append("D00")
-
+	
 	return pattern
 
 class Track:
