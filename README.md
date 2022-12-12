@@ -35,6 +35,7 @@
  - Fixed tempo at 150 (Use Speed to change playback rate)
  - BXX, C00, and D00 should only be placed in the first active channel 
  - FXX and ZXX will be clobbered by BXX, C00, or D00 on the same row
+ - PAL and Dendy speed adjustments are approximations, and not tempo-exact to NTSC
  
 ## FamiTracker Usage Guide:
  - Add tracks and SFX through Module -> Module Properties -> Add.
@@ -115,7 +116,7 @@
  
  To play a track, store one of these constant track values into `currentTrack`, and then call `sabre_playTrack`:
  ```
- LDA #_default_track0
+ LDA #default_track0
  STA currentTrack 
  JSR sabre_playTrack
  ```

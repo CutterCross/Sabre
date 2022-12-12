@@ -368,16 +368,18 @@ setNoteDurationToCountdown:
 	BNE endProcessChannelRow
 		INC channel_patternOffsetAddr+1,x
 endProcessChannelRow:
-	LDA #0
 	CPY #CHANNEL_TRACK_DMC
 	BCC +
 		;; Reset DMC state on new note
+		LDA #0
 		STA dmcStatus
 		JMP sabre_DMChandler
 	+
+	LDA #$FF 
+	STA channelLastArpNote,y
+	LDA #0
 	STA channelVolEnvelopeStep,y
 	STA channelArpEnvelopeStep,y
-	STA channelLastArpNote,y
 	CPY #CHANNEL_TRACK_NOISE
 	BCC +
 		STA noiseDutyEnvelopeStep-6,y
