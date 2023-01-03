@@ -1,5 +1,6 @@
 _default_Intermission_header:
 	.db 7
+	.db 150
 	.db 2
 	.dw _default_Intermission_pulse1
 	.dw _default_Intermission_pulse2
@@ -50,6 +51,7 @@ _default_Intermission_DMC_pattern0:
 
 _default_Triangle_Echo_test_header:
 	.db 6
+	.db 150
 	.db 16
 	.dw _default_Triangle_Echo_test_pulse1
 	.dw NULL_pulse2
@@ -175,6 +177,7 @@ _default_Triangle_Echo_test_DMC_pattern1:
 
 _default_testSong0_header:
 	.db 6
+	.db 150
 	.db 2
 	.dw _default_testSong0_pulse1
 	.dw NULL_pulse2

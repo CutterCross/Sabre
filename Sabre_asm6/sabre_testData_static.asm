@@ -139,6 +139,7 @@ dpcm_noteToSampleLength:
 
 _sfx_error_header:
 	.db 5
+	.db 150
 	.dw NULL_pulse1
 	.dw _sfx_error_pulse2
 	.dw NULL_triangle
@@ -148,6 +149,7 @@ _sfx_error_pulse2:
 
 _sfx_downSlide_header:
 	.db 6
+	.db 150
 	.dw _sfx_downSlide_pulse1
 	.dw _sfx_downSlide_pulse2
 	.dw _sfx_downSlide_triangle

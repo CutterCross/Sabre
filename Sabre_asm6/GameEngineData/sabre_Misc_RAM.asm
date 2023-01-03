@@ -43,10 +43,16 @@
 	channelBaseNote 			.dsb 9
 	channelLastArpNote			.dsb 8
 	
-	trackSpeed					.dsb 1	;; Number of frames between rows
-	SFXspeed					.dsb 1	;; Number of frames between rows
-	trackFrameTimer				.dsb 1	;; Cowntdown frame timer until next note change
-	SFXframeTimer				.dsb 1	;; Cowntdown frame timer until next note change
+	trackSpeed					.dsb 1
+	trackTempo 					.dsb 1
+	trackSpeedElapsed 			.dsb 1 
+	trackTempoElapsed 			.dsb 1
+	SFXspeed					.dsb 1
+	SFXtempo 					.dsb 1
+	SFXspeedElapsed 			.dsb 1 
+	SFXtempoElapsed 			.dsb 1
+	regionTickRate_track 		.dsb 1
+	regionTickRate_SFX			.dsb 1
 	trackCurrentPattern			.dsb 1
 	trackMaxPatterns			.dsb 1
 
@@ -54,6 +60,6 @@
 	currentSFX					.dsb 1
 	currentTrackPRGbank			.dsb 1
 
-	;; 116 bytes non-ZP 
+	;; 122 bytes non-ZP 
 	
 	

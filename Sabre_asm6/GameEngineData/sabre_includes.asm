@@ -1,12 +1,16 @@
 ;;;; SABRE constants ;;;;
 
-;;;; Comment out if not using unofficial opcodes
+;;;; Comment out features to disable them
 ;UNOFFICIAL_OPS = 1
+ADJ_REGION_TEMPO_TRACK = 1
+ADJ_REGION_TEMPO_SFX = 1
 
 ;;;; Sound region constants
 REGION_NTSC     = 0
 REGION_PAL      = 1
 REGION_DENDY    = 2
+REGION_TICK_NTSC_DENDY  = 150
+REGION_TICK_PAL = 125
 
 ;;;; Channel number constants 
 CHANNEL_TRACK_PULSE1    = 0

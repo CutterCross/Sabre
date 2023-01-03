@@ -5,6 +5,7 @@
  
 ## Features:
  - Note range: A0 - B7
+ - Speed and tempo 
  - All 5 2A03 channels supported for music (Pulse 1, Pulse 2, Triangle, Noise, DMC)
  - SFX can use up to 4 channels at once (Pulse 1, Pulse 2, Triangle, Noise)
  - Volume, arpeggio (absolute), pitch (relative), and duty envelopes supported for instruments 
@@ -19,12 +20,12 @@
  - 256 SFX 
  - 128 patterns per track 
  - 1 pattern per SFX
- - NTSC, PAL, and Dendy speed & period adjustments
+ - NTSC, PAL, and Dendy tempo & period adjustments
  
 ## Requirements:
- - 1708 bytes ROM
+ - 1770 bytes ROM
  - 42 bytes ZP RAM
- - 116 bytes non-ZP RAM 
+ - 122 bytes non-ZP RAM 
  
 ## Usage Notes:
  - Assign DPCM samples to 1 instrument only
@@ -32,14 +33,11 @@
  - No envelopes larger than size 254
  - No Hi-Pitch envelopes 
  - Pitch envelopes have no effect on Noise channel
- - Fixed tempo at 150 (Use Speed to change playback rate)
  - BXX, C00, and D00 should only be placed in the first active channel 
  - FXX and ZXX will be clobbered by BXX, C00, or D00 on the same row
- - PAL and Dendy speed adjustments are approximations, and not tempo-exact to NTSC
  
 ## FamiTracker Usage Guide:
  - Add tracks and SFX through Module -> Module Properties -> Add.
- - Keep Tempo setting at 150. Use the Speed setting to change playback rate.
  - To append a track to a seperate bank file, put a 2-digit prefix of the PRG bank number before the track name. (Example: '0B\_testSong0' for PRG bank $0B)
  - SFX should have a prefix of 'sfx_' before their track name.
  - Only use alphanumeric characters in instrument, track, and SFX names.
@@ -85,9 +83,14 @@
  ```
  - `sabre.asm`: Include where you would like the driver to be stored.
  
+#### Build flags in sabre\_includes.asm:
+ - `UNOFFICIAL_OPS`: Used by the Sabre replayer source to swap between `sabre.asm` and `sabre_uo.asm`.
+ - `ADJ_REGION_TEMPO_TRACK`: Enables tempo adjustment for music between NTSC, PAL, and Dendy regions.
+ - `ADJ_REGION_TEMPO_SFX`: Enables tempo adjustment for SFX between NTSC, PAL, and Dendy regions. 
+ 
 #### Differences between sabre.asm and sabre\_uo.asm:
  - `sabre.asm`: Use if your project does not use unofficial CPU opcodes.
- - `sabre_uo.asm`: Uses unofficial CPU opcodes ANC {#imm}, AXS {#imm}, LAX {zp}, and DCP {abs,y}
+ - `sabre_uo.asm`: Uses unofficial CPU opcodes ANC {#imm}, AXS {#imm}, LAX {zp}, and DCP {abs,y}. 
  
 ## Using Sabre:
 

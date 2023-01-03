@@ -35,9 +35,6 @@ sabre_registerInitTable:
 	.db $80,$00,$00,$00
 	.db $30,$00,$00,$00
 	.db $00,$00,$00,$00
-
-noisePeriodBitCheck:
-	.db %00010000
 	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -72,6 +69,21 @@ sabre_initAPU:
 	STA channelMuteStatus,x		;; Initialized all channels to unmuted
 	DEX 
 	BPL -
+	;; Determine region tick rate [NTSC / PAL / Dendy]
+	LDX #REGION_TICK_NTSC_DENDY		;; Default
+	STX regionTickRate_track
+	STX regionTickRate_SFX
+	LDA soundRegion
+	CMP #REGION_PAL
+	BNE +NTSC_Dendy
+		LDX #REGION_TICK_PAL
+	.ifdef ADJ_REGION_TEMPO_TRACK
+		STX regionTickRate_track
+	.endif 
+	.ifdef ADJ_REGION_TEMPO_SFX
+		STX regionTickRate_SFX
+	.endif 
++NTSC_Dendy:
 	RTS
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -95,20 +107,18 @@ sabre_playTrack:
 	LDA trackTable_PRGbank,y 
 	STA currentTrackPRGbank
 	LDY #0
-	LDA #$FF 
-	SEC
-	BIT soundRegion		;; Subtract 1 from track speed if PAL or Dendy
-	BEQ +
-		CLC 
-	+
-	ADC (pointer16),y 
-	STA trackSpeed  
-	TYA
-	STA trackCurrentPattern
-	STA trackFrameTimer 
+	LDA (pointer16),y
+	STA trackSpeed 
+	STA trackSpeedElapsed  
+	INY 
+	LDA (pointer16),y 
+	STA trackTempo 
+	LDA #0
+	STA trackCurrentPattern 
+	STA trackTempoElapsed
 	LDY #8
-	-
 	;; Zero out instruments and envelope steps
+	-
 	STA channelInstrument,y 
 	STA channelVolEnvelopeStep,y 
 	STA channelArpEnvelopeStep,y
@@ -125,6 +135,7 @@ sabre_playTrack:
 	STY channelNoteCountdown+4
 	STY channelNoteCountdown+6
 	STY channelNoteCountdown+8
+	INY 
 	LDA (pointer16),y 
 	STA trackMaxPatterns
 	INY 
@@ -181,19 +192,17 @@ sabre_playSFX:
 	LDA sfxHeaderTable_hi,y
 	STA pointer16+1
 	LDY #0
-	LDA #$FF 
-	SEC
-	BIT soundRegion		;; Subtract 1 from track speed if PAL or Dendy
-	BEQ +
-		CLC 
-	+
-	ADC (pointer16),y 
+	LDA (pointer16),y 
 	STA SFXspeed
-	TYA
-	STA SFXframeTimer
+	STA SFXspeedElapsed
+	INY 
+	LDA (pointer16),y 
+	STA SFXtempo
+	LDA #0
+	STA SFXtempoElapsed 
 	LDY #7
-	-
 	;; Zero out instruments and envelope steps [SFX]
+	-
 	STA channelInstrument,y 
 	STA channelVolEnvelopeStep,y 
 	STA channelArpEnvelopeStep,y
@@ -209,6 +218,7 @@ sabre_playSFX:
 	STY channelNoteCountdown+3	;; So starting note will occur on next tick
 	STY channelNoteCountdown+5
 	STY channelNoteCountdown+7
+	INY 
 	LDX #2
 setChannelSFXaddresses:
 	LDA (pointer16),y 
@@ -299,10 +309,12 @@ sabre_processChannelRow:
 	BNE +
 		JMP iterateNextSoundChannel
 	+
-	;; Check if we need to advance to the next FT row [Ticks = 0]
-	LDA trackFrameTimer
-SFXframeTimerReturnCheck:
-	BNE sabre_ProcessChannelEnvelopes
+	;; Check if we need to advance to the next FT row
+	LDA trackSpeedElapsed
+	CMP trackSpeed
+SFXspeedReturnCheck:
+	LDA #0
+	BCC sabre_ProcessChannelEnvelopes
 	;; Check if there's something to process this row 
 	DCP channelNoteCountdown,y
 	BNE sabre_ProcessChannelEnvelopes
@@ -331,17 +343,16 @@ skipInstrumentChange:
 		BNE +
 			INC channel_patternOffsetAddr+1,x
 		+
-		CMP #NOTE_LENGTHS_START
+		TAY 
+		SBC #NOTE_LENGTHS_START
 		BCC +
-			SBC #NOTE_LENGTHS_START
 			TAY 
 			LDA sabre_noteLengthTable,y
 			LDY sabreTemp
 			STA channelNoteDuration,y
-			JMP getNextPatternByte
+			BCS getNextPatternByte
 		+
 		;; Execute corresponding control opcode 
-		TAY 
 		LDA sabre_noteControlOpcodeTable_lo-NOTE_CEILING,y
 		STA pointer16 
 		LDA sabre_noteControlOpcodeTable_hi-NOTE_CEILING,y 
@@ -361,8 +372,7 @@ endProcessChannelRow:
 	CPY #CHANNEL_TRACK_DMC
 	BCC +
 		;; Reset DMC state on new note
-		LDA #0
-		STA dmcStatus
+		LSR dmcStatus		;; Dirty cheat to zero out - Only bit 0 used
 		JMP sabre_DMChandler
 	+
 	LDA #$FF 
@@ -474,7 +484,7 @@ sabre_ProcessChannelEnvelopes:
 	LDA soundRegion
 	CMP #REGION_PAL
 	BEQ +PAL
-		;; Use NTSC / DENDY period table
+		;; Use NTSC period table
 		LDA NTSC_PTNperiodTable_lo,y 
 		STA apuShadow4002X,x
 		CPY #36 
@@ -618,9 +628,10 @@ sabre_processChannelSFXrow:
 	;; Cheack if this channel is active
 	LDA channel_trackAddr+1,x
 	BEQ iterateNextSoundChannel
-	;; Check if we need to advance to the next FT row [Ticks = 0]
-	LDA SFXframeTimer
-	JMP SFXframeTimerReturnCheck
+	;; Check if we need to advance to the next FT row
+	LDA SFXspeedElapsed
+	CMP SFXspeed
+	JMP SFXspeedReturnCheck
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -710,7 +721,7 @@ sabre_updateAPUregisters:
 		JMP +
 +noSFX:
 	LDA apuShadow4008
-	ANC #%00001111
+	AND #%00001111
 	ORA #%10000000
 	STA $4008
 	LDA apuShadow400A
@@ -734,25 +745,47 @@ sabre_updateAPUregisters:
 	+
 	STA $400E 
 
-	;; Update track frame timer
-	LDA trackFrameTimer
-	BNE +
-		LDA trackSpeed 
-		BEQ ++	;; Exception for PAL speed "0"
+
+
+	;; Update track speed 
+	LDA trackSpeedElapsed
+	SEC
+	SBC trackSpeed 
+	BCC +
+		STA trackSpeedElapsed
 	+
-	SBC #0
-	STA trackFrameTimer
-	++
-	;; Update SFX frame timer
-	LDA SFXframeTimer
-	BNE +
-		LDA SFXspeed
-		BEQ ++	;; Exception for PAL speed "0"
+	;; Update SFX speed 
+	LDA SFXspeedElapsed
+	SEC 
+	SBC SFXspeed 
+	BCC +
+		STA SFXspeedElapsed
 	+
-	CLC 
-	SBC #0
-	STA SFXframeTimer
-	++
+	;; Update track tempo
+	LDA trackTempoElapsed
+	CLC
+	ADC trackTempo 
+	CMP regionTickRate_track
+	BCC +
+		-
+		SBC regionTickRate_track
+		INC trackSpeedElapsed
+		CMP regionTickRate_track
+		BCS -
+	+
+	STA trackTempoElapsed
+	;; Update SFX tempo 
+	LDA SFXtempoElapsed 
+	ADC SFXtempo 
+	CMP regionTickRate_SFX 
+	BCC +
+		-
+		SBC regionTickRate_SFX
+		INC SFXspeedElapsed
+		CMP regionTickRate_SFX
+		BCS -
+	+
+	STA SFXtempoElapsed
 	PLA 
 	TAY 
 	PLA 
@@ -821,9 +854,9 @@ op_D00:
 	LDA trackCurrentPattern
 	ADC #1		;; Carry guaranteed to be cleared 
 	CMP trackMaxPatterns
-	BCC +
-		LDA #0
-	+
+	BCC setNewTrackPattern
+	LDA #0
+setNewTrackPattern:
 	STA trackCurrentPattern
 	ASL 
 	TAY 
@@ -839,17 +872,7 @@ op_D00:
 op_BXX:
 	;; BXX - Jump to beginning of specified pattern of next byte
 	LDA (channel_patternOffsetAddr,x)
-	STA trackCurrentPattern
-	ASL
-	TAY 
-	JSR setChannelPatternAddresses
-	LDA #1
-	STA channelNoteCountdown+2
-	STA channelNoteCountdown+4
-	STA channelNoteCountdown+6
-	STA channelNoteCountdown+8
-	LDY sabreTemp 
-	JMP getNextPatternByte
+	JMP setNewTrackPattern
 
 op_C00:
 	;; CXX - Terminate track
@@ -869,14 +892,9 @@ op_NLC:
 
 op_FXX:
 	;; FXX - Set track speed with next byte 
-	LDA #$FF 
-	SEC
-	BIT soundRegion		;; Subtract 1 from track speed if PAL or Dendy
-	BEQ +
-		CLC 
-	+
-	ADC (channel_patternOffsetAddr,x)
+	LDA (channel_patternOffsetAddr,x)
 	STA trackSpeed
+	STA trackSpeedElapsed
 	INC channel_patternOffsetAddr,x 
 	BNE +
 		INC channel_patternOffsetAddr+1,x
