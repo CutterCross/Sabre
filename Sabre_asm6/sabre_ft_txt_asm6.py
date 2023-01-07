@@ -202,10 +202,11 @@ def compile_sabre_pattern(rows:"list[Row_data]", channel:str, sfx:bool = False) 
 	return pattern
 
 class Track:
-	def __init__(self, name:str, group:str, speed:int):
+	def __init__(self, name:str, group:str, speed:int, tempo:int):
 		self.name = name
 		self.group = group
 		self.speed = speed
+		self.tempo = tempo
 		self.frames = 0
 		self.patterns = {
 			"pulse1": {},
@@ -464,7 +465,8 @@ def read_ft_txt(filename:str):
 				pattern_length = int(track_data[1])
 				pattern_count = 0
 				track_speed = int(track_data[2])
-				track_obj = Track(track_name, group, track_speed)
+				track_tempo = int(track_data[3])
+				track_obj = Track(track_name, group, track_speed, track_tempo)
 			if track_obj and line.startswith("ORDER"):
 				order_data = line.split()
 				order_data = [int(x, base=16) for x in order_data[3:]]
@@ -628,6 +630,7 @@ def write_asm(music_data:Music, filename:str):
 		for track in tracks:
 			buffer += f"{track.label()}_header:\n"
 			buffer += f"\t.db {track.speed}\n"
+			buffer += f"\t.db {track.tempo}\n"
 			buffer += f"\t.db {len(track.orders[CHANNELS[0]])}\n"
 			for i,ch in enumerate(CHANNELS):
 				label = track.label() if track.check_channel_used(i) else "NULL"
