@@ -465,16 +465,16 @@ def read_ft_txt(filename:str):
 				pattern_count = 0
 				track_speed = int(track_data[2])
 				track_obj = Track(track_name, group, track_speed)
-			if line.startswith("ORDER"):
+			if track_obj and line.startswith("ORDER"):
 				order_data = line.split()
 				order_data = [int(x, base=16) for x in order_data[3:]]
 				track_obj.add_order(order_data[0], order_data[1], order_data[2], order_data[3], order_data[4])
 				pattern_count = max([pattern_count] + order_data)
-			if line.startswith("PATTERN"):
+			if track_obj and line.startswith("PATTERN"):
 				pattern_current = int(line.split()[1], base=16)
 				track_obj.init_pattern(pattern_current)
 				row_current = 0
-			if line.startswith("ROW"):
+			if track_obj and line.startswith("ROW"):
 				row_data = line.split(" : ")
 				for i, pattdata in enumerate(row_data[1:]):
 					pattdata = pattdata.rstrip()
@@ -485,6 +485,7 @@ def read_ft_txt(filename:str):
 				row_current += 1
 				if pattern_current >= pattern_count and row_current >= pattern_length:
 					music_data.add_track(track_obj)
+					track_obj = None
 
 	return music_data
 
