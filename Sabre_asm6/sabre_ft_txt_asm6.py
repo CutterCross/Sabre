@@ -173,22 +173,25 @@ def compile_sabre_pattern(rows:"list[Row_data]", channel:str, sfx:bool = False) 
 				include_length = False
 				include_note = False
 		
+		# this whole section is messy but it should work
 		if include_length:
 			if row.length in NOTE_LENGTHS:
 				pattern.append(f"NL{str(row.length)}")
 			else:
 				pattern.append("NLC")
 				pattern.append(str(row.length))
-		if row.effect != None:
-			if sfx and row.effect[0] in FX_PATTERN_ENDING:
-				pattern.append("END_SFX")
-			else:
+		if row.effect != None and row.effect[0] not in FX_PATTERN_ENDING:
 				pattern.append(row.effect)
 		if include_inst:
 			cont = "|CONT" if include_note else ""
 			pattern.append(f"INST{cont}|{row.inst}")
 		if include_note:
 			pattern.append(row.note)
+		if row.effect != None and row.effect[0] in FX_PATTERN_ENDING:
+			if sfx:
+				pattern.append("END_SFX")
+			else:
+				pattern.append(row.effect)
 
 		if finished_converting:
 			break
