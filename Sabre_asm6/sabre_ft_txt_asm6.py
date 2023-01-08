@@ -227,6 +227,7 @@ class Track:
 		}
 		try:
 			self.group_hex = int(self.group, base=16)
+			self.group = self.group.upper()
 		except ValueError:
 			self.group_hex = 0
 		if self.group_hex == 0 or self.group_hex >= 256:
@@ -602,6 +603,7 @@ def write_asm(music_data:Music, filename:str):
 	for sfx in music_data.get_tracks_by_group("sfx"):
 		static_buffer += f"{sfx.label()}_header:\n"
 		static_buffer += f"\t.db {sfx.speed}\n"
+		static_buffer += f"\t.db {sfx.tempo}\n"
 		SFX_CHANNELS = CHANNELS[:len(CHANNELS)-1]
 		for i,ch in enumerate(SFX_CHANNELS):
 			label = sfx.label() if sfx.check_channel_used(i) else "NULL"
