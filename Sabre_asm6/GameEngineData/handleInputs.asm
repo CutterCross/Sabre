@@ -1,3 +1,4 @@
+.align 32
 doHandleInputs:
     LDA gamepad             ;; get put get
     STA last_gamepad        ;; put get put

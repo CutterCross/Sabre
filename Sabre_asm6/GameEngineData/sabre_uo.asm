@@ -106,6 +106,12 @@ sabre_playTrack:
 	STA pointer16+1
 	LDA trackTable_PRGbank,y 
 	STA currentTrackPRGbank
+	;;;; Custom bankswitch here!
+	.ifdef BANKSWITCH_TRACKS
+		TAY
+		JSR UNROM_bankswitchNoSave
+	.endif
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	LDY #0
 	LDA (pointer16),y
 	STA trackSpeed 

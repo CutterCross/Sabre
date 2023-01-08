@@ -1,4 +1,4 @@
-doHandleButtonScripts:
+handleButtonScripts:
     LDA last_gamepad 
     EOR #$FF 
     AND gamepad 

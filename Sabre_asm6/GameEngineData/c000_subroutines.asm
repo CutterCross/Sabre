@@ -1,4 +1,4 @@
-.align 32
+.align 64
 
 waitVBlankCycle:
 	BIT $2002
@@ -269,7 +269,6 @@ PAL_5dotAlign:
 
 convertToBase10_digits:
     ;; Initial value in A
-    STA temp 
     LDY #$FF
     SEC 
     ;; Get hundreds place
@@ -287,14 +286,9 @@ convertToBase10_digits:
     BCS -
     STY temp2 
     ;; Get ones place
-    ADC #10
-    LDY #$FF 
-    -
-    INY 
-    SBC #1
-    BCS -
-    STY temp1 
-    RTS     ;; 35
+    ADC #10 
+	STA temp1
+    RTS
 
 updateParameterInfo:
 	TEXT_BASE = $A0

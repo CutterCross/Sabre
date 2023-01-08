@@ -33,13 +33,13 @@
  - No envelopes larger than size 254
  - No Hi-Pitch envelopes 
  - Pitch envelopes have no effect on Noise channel
- - BXX, C00, and D00 should only be placed in the first active channel 
+ - BXX, C00, and D00 should only be placed in the first active channel (left -> right)
  - FXX and ZXX will be clobbered by BXX, C00, or D00 on the same row
  
 ## FamiTracker Usage Guide:
  - Add tracks and SFX through Module -> Module Properties -> Add.
  - To append a track to a seperate bank file, put a 2-digit prefix of the PRG bank number before the track name. (Example: '0B\_testSong0' for PRG bank $0B)
- - SFX should have a prefix of 'sfx_' before their track name.
+ - SFX should have a prefix of `sfx_` before their track name.
  - Only use alphanumeric characters in instrument, track, and SFX names.
  - Export as FT TXT through File -> Export Text.
 
@@ -63,7 +63,7 @@
 ### After converting your FT TXT music file:
  - `{filename}_static.asm`: Include alongside `sabre.asm`. Contains LUTs, instruments, and SFX.
  - `{filename}_dpcm.asm`: If this file is generated, include in a static PRG bank at $C000-$FFFF. Contains DPCM sample data.
- - `{filename}_{bankNo.}.asm`: Include where you would like your track data to be stored. Contains track data in this group. 
+ - `{filename}_{bankNo.}.asm`: Include in the corresponding PRG bank where you want your track data to be stored. Contains track data.
  
 ## Including Sabre (ASM6):
  - `sabre_includes.asm`: Include at the top of your program, along with any other program constants you have defined.
@@ -81,10 +81,11 @@
  .include "sabre_Misc_RAM.asm"
  .ende
  ```
- - `sabre.asm`: Include where you would like the driver to be stored.
+ - `sabre.asm`: Include where you want the driver to be stored.
  
 #### Build flags in sabre\_includes.asm:
  - `UNOFFICIAL_OPS`: Used by the Sabre replayer source to swap between `sabre.asm` and `sabre_uo.asm`.
+ - `BANKSWITCH_TRACKS`: Used by the Sabre replayer and driver to bankswitch each track's corresponding PRG bank.
  - `ADJ_REGION_TEMPO_TRACK`: Enables tempo adjustment for music between NTSC, PAL, and Dendy regions.
  - `ADJ_REGION_TEMPO_SFX`: Enables tempo adjustment for SFX between NTSC, PAL, and Dendy regions. 
  
@@ -92,7 +93,7 @@
  - `sabre.asm`: Use if your project does not use unofficial CPU opcodes.
  - `sabre_uo.asm`: Uses unofficial CPU opcodes ANC {#imm}, AXS {#imm}, LAX {zp}, and DCP {abs,y}. 
  
-## Using Sabre:
+## Using Sabre in your project:
 
 ### Initialization:
  In your program's initialization, store your desired region value into `soundRegion`, and then call `sabre_initAPU`.
@@ -110,22 +111,38 @@
  ```
  JSR sabre_soundUpdate
  ```
+ 
+#### Bankswitching tracks:
  If you have tracks in multiple PRG banks and can freely access Sabre during bankswitching, load `currentTrackPRGbank` and use your bankswitch routine to swap in that bank before calling `sabre_soundUpdate`.
  
  Don't forget to swap the original PRG bank back in after the sound update!
+ 
+ Replace the default UNROM bankswitch subroutine call (located in the `sabre_playTrack` subroutine of the `sabre.asm` file) with your own bankswitch routine: 
+ ```
+ ;;;; Custom bankswitch here!
+ .ifdef BANKSWITCH_TRACKS
+ 	TAY
+ 	JSR UNROM_bankswitchNoSave
+ .endif
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ ```
+ If you keep the `BANKSWITCH_TRACKS` build flag, ensure that it is enabled in `sabre_includes.asm`.
+ 
+#### If not bankswitching tracks:
+ If you are not bankswitching tracks, either disable the `BANKSWITCH_TRACKS` build flag, or delete the default UNROM bankswitch section in the `sabre_playTrack` subroutine.
  
 ### Playing tracks and SFX:
  The top of your exported `{filename}_static.asm` file will contain a set of constants for each track and SFX index. 
  
  To play a track, store one of these constant track values into `currentTrack`, and then call `sabre_playTrack`:
  ```
- LDA #default_track0
+ LDA #_default_track0
  STA currentTrack 
  JSR sabre_playTrack
  ```
  To play SFX, store one of these constant SFX values into `currentSFX`, and then call `sabre_playSFX`:
  ```
- LDA #sfx_sfx0
+ LDA #_sfx_sfx0
  STA currentSFX
  JSR sabre_playSFX
  ```
