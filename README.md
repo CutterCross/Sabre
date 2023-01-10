@@ -36,6 +36,15 @@
  - BXX, C00, and D00 should only be placed in the first active channel (left -> right)
  - FXX and ZXX will be clobbered by BXX, C00, or D00 on the same row
  
+## Sabre Replayer Controls:
+ - D-Pad L/R: Change track index
+ - D-Pad L/R (Holding B): Change SFX index
+ - D-Pad U/D: Change selected 2A03 channel
+ - Select: Stop/restart current track
+ - Start: Pause/unpause current track 
+ - B: Play current SFX index 
+ - A: Mute/unmute selected 2A03 channel
+ 
 ## FamiTracker Usage Guide:
  - Add tracks and SFX through Module -> Module Properties -> Add.
  - To append a track to a seperate bank file, put a 2-digit prefix of the PRG bank number before the track name. (Example: '0B\_testSong0' for PRG bank $0B)
@@ -54,9 +63,11 @@
  
  Alternatively, you can run via the command line.
  ```
- python sabre_ft_txt_asm6.py {filename}.txt	
+ python sabre_ft_txt_asm6.py {filename}.txt	{title}
  ```
  Replace {filename} with the name of your exported FT txt file 
+ 
+ (Optional) Replace {title} to use a different prefix than {filename} for your output files.
  
  If no files are created, there was likely a runtime error. Running via the command line can help list any errors that occur.
  
@@ -112,7 +123,7 @@
  JSR sabre_soundUpdate
  ```
  
-#### Bankswitching tracks:
+### Bankswitching tracks:
  If you have tracks in multiple PRG banks and can freely access Sabre during bankswitching, load `currentTrackPRGbank` and use your bankswitch routine to swap in that bank before calling `sabre_soundUpdate`.
  
  Don't forget to swap the original PRG bank back in after the sound update!
@@ -128,7 +139,7 @@
  ```
  If you keep the `BANKSWITCH_TRACKS` build flag, ensure that it is enabled in `sabre_includes.asm`.
  
-#### If not bankswitching tracks:
+### If not bankswitching tracks:
  If you are not bankswitching tracks, either disable the `BANKSWITCH_TRACKS` build flag, or delete the default UNROM bankswitch section in the `sabre_playTrack` subroutine.
  
 ### Playing tracks and SFX:

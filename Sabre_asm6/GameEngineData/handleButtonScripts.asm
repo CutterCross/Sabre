@@ -101,6 +101,8 @@ endStartInput_pressed:
     ;;;;;;;; SELECT PRESSED ;;;;;;;
     BIT pressed_gamepad
     BEQ endSelectInput_pressed
+        LDA #0 
+        STA maxCPUscanlines
         ;; Toggle stopSong / restart song
         LDA trackRestartStatus
         EOR #$FF 

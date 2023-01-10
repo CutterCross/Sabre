@@ -461,5 +461,5 @@ updateByteDecimalNumberNAM:
 .include "GameEngineData\PPU_DATA\SABRE_soundTest_NAM_ATT.asm"
 .include "GameEngineData\PPU_DATA\SABRE_soundTest_PAL.asm"
 
-.include "sabre_testData_static.asm"
-.include "sabre_testData_dpcm.asm"
+.include "sabre_demoTracks_static.asm"
+.include "sabre_demoTracks_dpcm.asm"
