@@ -121,7 +121,10 @@ class Row_data:
 		self.effect = effect
 
 	def inc_length(self):
-		self.length += 1
+		if self.effect and self.effect[0] in FX_PATTERN_ENDING:
+			pass
+		else:
+			self.length += 1
 
 	def contains_note_data(self) -> bool:
 		if self.note != None and self.note != NOTE_NULL:
