@@ -63,7 +63,7 @@
  
  Alternatively, you can run via the command line.
  ```
- python sabre_ft_txt_asm6.py {filename}.txt	{title}
+ python sabre_ft_txt_asm6.py {filename}.txt {title}
  ```
  Replace {filename} with the name of your exported FT txt file 
  
