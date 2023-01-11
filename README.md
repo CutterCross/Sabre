@@ -1,4 +1,6 @@
 # Sabre
+ ![](SabreLogo.png)
+ 
  Sabre is a lightweight sound driver for NES homebrew projects, compatible with FamiTracker TXT data exported from FamiTracker and FamiStudio. 
  
  Currently only written for ASM6.
@@ -47,7 +49,7 @@
  
 ## FamiTracker Usage Guide:
  - Add tracks and SFX through Module -> Module Properties -> Add.
- - To append a track to a seperate bank file, put a 2-digit prefix of the PRG bank number before the track name. (Example: '0B\_testSong0' for PRG bank $0B)
+ - To append a track to a seperate bank file, put a 2-digit prefix of the PRG bank number before the track name. (Example: `0B_testSong0` for PRG bank $0B)
  - SFX should have a prefix of `sfx_` before their track name.
  - Only use alphanumeric characters in instrument, track, and SFX names.
  - Export as FT TXT through File -> Export Text.
@@ -65,9 +67,9 @@
  ```
  python sabre_ft_txt_asm6.py {filename}.txt {title}
  ```
- Replace {filename} with the name of your exported FT txt file 
+ Replace `{filename}` with the name of your exported FT txt file 
  
- (Optional) Replace {title} to use a different prefix than {filename} for your output files.
+ (Optional) Replace `{title}` to use a different prefix than `{filename}` for your output files.
  
  If no files are created, there was likely a runtime error. Running via the command line can help list any errors that occur.
  
