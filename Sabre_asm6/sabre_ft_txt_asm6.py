@@ -550,14 +550,16 @@ def write_asm(music_data:Music, filename:str):
 		static_buffer += f"\t.db >{label}_header\n"
 	static_buffer += "\n"
 
-	static_buffer += ";;;; Track index constants\n"
-	label_len = len(max(track_names, key=len))
-	for k, label in enumerate(track_names):
-		static_buffer += f"\t{label.ljust(label_len)} = {k}\n"
-	static_buffer += ";;;; SFX index constants\n"
-	label_len = len(max(sfx_names, key=len))
-	for k, label in enumerate(sfx_names):
-		static_buffer += f"\t{label.ljust(label_len)} = {k}\n"
+	if track_count > 0:
+		static_buffer += ";;;; Track index constants\n"
+		label_len = len(max(track_names, key=len))
+		for k, label in enumerate(track_names):
+			static_buffer += f"\t{label.ljust(label_len)} = {k}\n"
+	if sfx_count > 0:
+		static_buffer += ";;;; SFX index constants\n"
+		label_len = len(max(sfx_names, key=len))
+		for k, label in enumerate(sfx_names):
+			static_buffer += f"\t{label.ljust(label_len)} = {k}\n"
 	static_buffer += "\n"
 
 	# envelopes
