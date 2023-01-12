@@ -7,6 +7,7 @@
  
 ## Features:
  - Note range: A0 - B7
+ - Note cuts
  - Speed and tempo 
  - All 5 2A03 channels supported for music (Pulse 1, Pulse 2, Triangle, Noise, DMC)
  - SFX can use up to 4 channels at once (Pulse 1, Pulse 2, Triangle, Noise)
@@ -35,6 +36,7 @@
  - No envelopes larger than size 254
  - No Hi-Pitch envelopes 
  - Pitch envelopes have no effect on Noise channel
+ - Do not expand effect columns to more than 1 effect per channel
  - BXX, C00, and D00 should only be placed in the first active channel (left -> right)
  - FXX and ZXX will be clobbered by BXX, C00, or D00 on the same row
  
@@ -115,7 +117,7 @@
 
 ### Initialization:
  In your program's initialization, store your desired region value into `soundRegion`, and then call `sabre_initAPU`.
- - `REGION_NTSC `
+ - `REGION_NTSC`
  - `REGION_PAL`
  - `REGION_DENDY`
  ```
