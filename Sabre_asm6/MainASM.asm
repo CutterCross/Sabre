@@ -28,26 +28,5 @@
 	.base $8000
 	.include "GameEngineData\BankData\UNROM_Bank06.asm"
 	.pad $c000
-;;=========================
-;; Reset
-	.include "GameEngineData\reset.asm"
-;;=========================
-;; Initialization + game loop
-	.include "GameEngineData\initialization.asm"
-	.include "GameEngineData\mainGameLoop.asm"
-;;=========================
-;; NMI
-	.include "GameEngineData\NMI.asm"
-;;=========================
-;; $C000 Subroutines
-	.include "GameEngineData\c000_subroutines.asm"
-	.pad $F000	;; Nice visual way to see engine size in NESsc
-.ifdef UNOFFICIAL_OPS 
-	.include "GameEngineData\sabre_uo.asm"
-.else
-	.include "GameEngineData\sabre.asm"
-.endif
-;;=========================
-;; Vectors
-    .include "GameEngineData\vectors.asm"
+	.include "GameEngineData\BankData\UNROM_Bank07_static.asm"
 ;;=========================

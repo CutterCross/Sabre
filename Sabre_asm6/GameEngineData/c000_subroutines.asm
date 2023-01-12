@@ -86,6 +86,8 @@ loop_writePatternTable1:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	
 loadSoundTestScreen:
+	LDY #$06 
+	JSR UNROM_bankswitchY
 	;;;; Load palette
 	BIT $2002
     LDX #$3F
@@ -457,9 +459,3 @@ updateByteDecimalNumberNAM:
 
 .include "GameEngineData\handleInputs.asm"
 .include "GameEngineData\handleButtonScripts.asm"
-	
-.include "GameEngineData\PPU_DATA\SABRE_soundTest_NAM_ATT.asm"
-.include "GameEngineData\PPU_DATA\SABRE_soundTest_PAL.asm"
-
-.include "sabre_demoTracks_static.asm"
-.include "sabre_demoTracks_dpcm.asm"

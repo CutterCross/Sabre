@@ -73,12 +73,17 @@
  
  If no files are created, there was likely a runtime error. Running via the command line can help list any errors that occur.
  
-### After converting your FT TXT music file:
+### Converted Music Data Files:
  - `{filename}_static.asm`: Include alongside `sabre.asm`. Contains LUTs, instruments, and SFX.
  - `{filename}_dpcm.asm`: If this file is generated, include in a static PRG bank at $C000-$FFFF. Contains DPCM sample data.
  - `{filename}_{bankNo.}.asm`: Include in the corresponding PRG bank where you want your track data to be stored. Contains track data.
  
-## Including Sabre (ASM6):
+### Including Your Music Data in the Sabre Replayer: 
+ - `{filename}_static.asm`: Include in `UNROM_Bank07_static.asm`.
+ - `{filename}_dpcm.asm`: If this file is generated, include in `UNROM_Bank07_static.asm`.
+ - `{filename}_{bankNo.}.asm`: Include in the corresponding UNROM_Bank file in the `BankData` folder. (Default bank is $00.)
+ 
+## Including Sabre in Your Project (ASM6):
  - `sabre_includes.asm`: Include at the top of your program, along with any other program constants you have defined.
  - `sabre_ZP_RAM.asm`: Include in your Zero Page RAM defines.
  ```
@@ -96,17 +101,17 @@
  ```
  - `sabre.asm`: Include where you want the driver to be stored.
  
-#### Build flags in sabre\_includes.asm:
+#### Build Flags in sabre\_includes.asm:
  - `UNOFFICIAL_OPS`: Used by the Sabre replayer source to swap between `sabre.asm` and `sabre_uo.asm`.
  - `BANKSWITCH_TRACKS`: Used by the Sabre replayer and driver to bankswitch each track's corresponding PRG bank.
  - `ADJ_REGION_TEMPO_TRACK`: Enables tempo adjustment for music between NTSC, PAL, and Dendy regions.
  - `ADJ_REGION_TEMPO_SFX`: Enables tempo adjustment for SFX between NTSC, PAL, and Dendy regions. 
  
-#### Differences between sabre.asm and sabre\_uo.asm:
+#### Differences Between sabre.asm and sabre\_uo.asm:
  - `sabre.asm`: Use if your project does not use unofficial CPU opcodes.
  - `sabre_uo.asm`: Uses unofficial CPU opcodes ANC {#imm}, AXS {#imm}, LAX {zp}, and DCP {abs,y}. 
  
-## Using Sabre in your project:
+## Using Sabre in Your Project:
 
 ### Initialization:
  In your program's initialization, store your desired region value into `soundRegion`, and then call `sabre_initAPU`.
@@ -125,7 +130,7 @@
  JSR sabre_soundUpdate
  ```
  
-### Bankswitching tracks:
+### Bankswitching Tracks:
  If you have tracks in multiple PRG banks and can freely access Sabre during bankswitching, load `currentTrackPRGbank` and use your bankswitch routine to swap in that bank before calling `sabre_soundUpdate`.
  
  Don't forget to swap the original PRG bank back in after the sound update!
@@ -141,10 +146,10 @@
  ```
  If you keep the `BANKSWITCH_TRACKS` build flag, ensure that it is enabled in `sabre_includes.asm`.
  
-### If not bankswitching tracks:
+### If Not Bankswitching Tracks:
  If you are not bankswitching tracks, either disable the `BANKSWITCH_TRACKS` build flag, or delete the default UNROM bankswitch section in the `sabre_playTrack` subroutine.
  
-### Playing tracks and SFX:
+### Playing Tracks and SFX:
  The top of your exported `{filename}_static.asm` file will contain a set of constants for each track and SFX index. 
  
  To play a track, store one of these constant track values into `currentTrack`, and then call `sabre_playTrack`:
