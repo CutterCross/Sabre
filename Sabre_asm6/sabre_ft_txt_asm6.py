@@ -108,8 +108,7 @@ class Row_data:
 		if effect:
 			if effect[0] not in FX_SUPPORTED:
 				effect = None
-			
-			if effect[0] not in FX_NO_VALUE:
+			elif effect[0] not in FX_NO_VALUE:
 				effect = f"{effect[0]}XX,${effect[1:]}"
 
 		if note == None and inst == None:
