@@ -1,7 +1,7 @@
 # Sabre
  ![](SabreLogo.png)
  
- Sabre is a lightweight sound driver for NES homebrew projects, compatible with FamiTracker TXT data exported from FamiTracker and FamiStudio. 
+ Sabre is a lightweight sound driver for NES homebrew projects, compatible with FamiTracker TXT data. 
  
  Currently only written for ASM6.
  
@@ -55,9 +55,6 @@
  - SFX should have a prefix of `sfx_` before their track name.
  - Only use alphanumeric characters in instrument, track, and SFX names.
  - Export as FT TXT through File -> Export Text.
-
-## FamiStudio Usage Guide:
- TODO
  
 ## Converting with sabre\_ft\_txt\_asm6.py: 
  You must have Python installed in order to execute .py modules. Python 3.X and above are recommended.
