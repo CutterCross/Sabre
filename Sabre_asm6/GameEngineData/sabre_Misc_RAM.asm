@@ -3,7 +3,6 @@
 	apuShadow4000X				.dsb 8
 	apuShadow4002X				.dsb 8
 	apuShadow4003X				.dsb 6
-	dmcStatus					.dsb 1	;; [0] Play new sample; [1] Don't update
 	apuLast4003					.dsb 1
 	apuLast4007					.dsb 1
 
@@ -60,6 +59,6 @@
 	currentSFX					.dsb 1
 	currentTrackPRGbank			.dsb 1
 
-	;; 122 bytes non-ZP 
+	;; 121 bytes non-ZP 
 	
 	

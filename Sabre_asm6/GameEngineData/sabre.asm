@@ -123,8 +123,8 @@ sabre_playTrack:
 	STA trackCurrentPattern 
 	STA trackTempoElapsed
 	LDY #8
-	-
 	;; Zero out instruments and envelope steps
+	-
 	STA channelInstrument,y 
 	STA channelVolEnvelopeStep,y 
 	STA channelArpEnvelopeStep,y
@@ -172,8 +172,6 @@ setChannelTrackAddresses:
 	STA apuLast4003
 	STA apuLast4007
 	;; Initialize DMC
-	LDA #1
-	STA dmcStatus
 	LDA #%00001111
 	STA $4015
 endPlayTrack:
@@ -307,32 +305,57 @@ setChannelPatternAddresses:
 ;; 8 - DMC
 
 sabre_soundUpdate:
+	LDA regionTickRate_track
+	BNE +
+		RTS		;; In case update called before sabre_initAPU finishes
+	+
 	TXA 
 	PHA 
 	TYA 
 	PHA
-	LDX #0		;; X contains channel index << 1
-	LDY #0		;; Y contains channel index 
-sabre_processChannelRow:
-	;; Check if this channel is active
+	LDX #0
+	LDY #0
+	BEQ trackProcessChannelRow
+	
+endAllChannelProcessing:
+	JMP sabre_updateAPUregisters	
+
+SFXprocessChannelRow:
+	;; Channel bounds checking
+	CPY #CHANNEL_TRACK_DMC+1
+	BCS endAllChannelProcessing
+	;; SFX channel
+	LDA channel_trackAddr+1,x
+	BEQ iterateNextSoundChannel
+	;; Check if we need to advance to the next FT row
+	LDA SFXspeedElapsed
+	CMP SFXspeed
+	JMP SFXspeedReturnCheck	
+
+iterateNextSoundChannel:
+	INX 
+	INX 	;; X contains channel index << 1
+	INY		;; Y contains channel index 
+	TYA 
+	LSR
+	BCS SFXprocessChannelRow
+trackProcessChannelRow:
+	;; Music channel
 	LDA channel_trackAddr+1,x
 	AND sabrePauseStatus
-	BNE +
-		JMP iterateNextSoundChannel
-	+
+	BEQ iterateNextSoundChannel
 	;; Check if we need to advance to the next FT row
 	LDA trackSpeedElapsed
 	CMP trackSpeed
 SFXspeedReturnCheck:
-	LDA #0
-	BCS + 
-		JMP sabre_ProcessChannelEnvelopes
-	+
 	;; Check if there's something to process this row 
 	LDA channelNoteCountdown,y 
+	BCC sabre_ProcessChannelEnvelopes_DMCcheck
 	SBC #1
 	STA channelNoteCountdown,y
-	BNE sabre_ProcessChannelEnvelopes
+	BNE sabre_ProcessChannelEnvelopes_DMCcheck
+	
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	
 getNextPatternByte:
 	LDA (channel_patternOffsetAddr,x)
@@ -345,9 +368,10 @@ getNextPatternByte:
 		BVC setNoteDurationToCountdown
 		;; Increment pattern offset address 
 		INC channel_patternOffsetAddr,x 
-		BNE getNextPatternByte
+		BNE +
 			INC channel_patternOffsetAddr+1,x
-		BVS getNextPatternByte 
+		+
+		LDA (channel_patternOffsetAddr,x)	;; Will never have 2 INST changes in a row
 skipInstrumentChange:
 	;; Check if current byte is a control instruction
 	CMP #NOTE_CEILING 
@@ -386,8 +410,7 @@ setNoteDurationToCountdown:
 endProcessChannelRow:
 	CPY #CHANNEL_TRACK_DMC
 	BCC +
-		;; Reset DMC state on new note
-		LSR dmcStatus		;; Dirty cheat to zero out - Only bit 0 used
+		;; Play new sample
 		JMP sabre_DMChandler
 	+
 	LDA #$FF 
@@ -407,12 +430,12 @@ endProcessChannelRow:
 	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-sabre_ProcessChannelEnvelopes:
+sabre_ProcessChannelEnvelopes_DMCcheck:
 	CPY #CHANNEL_TRACK_DMC
-	BCC +
+	BCC sabre_ProcessChannelEnvelopes
 		;; Skip envelope handling for DMC
-		JMP sabre_DMChandler
-	+
+		JMP sabre_updateAPUregisters
+sabre_ProcessChannelEnvelopes:
 	STX sabreTemp 
 	TYA 
 	TAX
@@ -624,44 +647,16 @@ endDutyEnvelope:
 	TXA
 	LSR 
 	TAY 
-	
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-iterateNextSoundChannel:
-	INX 
-	INX 
-	INY
-	CPY #CHANNEL_TRACK_DMC+1
-	BCS sabre_DMChandler
-	TYA 
-	AND #%00000001
-	BNE sabre_processChannelSFXrow
-	JMP sabre_processChannelRow
-	
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	
-sabre_processChannelSFXrow:
-	;; Cheack if this channel is active
-	LDA channel_trackAddr+1,x
-	BEQ iterateNextSoundChannel
-	;; Check if we need to advance to the next FT row
-	LDA SFXspeedElapsed
-	CMP SFXspeed
-	JMP SFXspeedReturnCheck
+	JMP iterateNextSoundChannel
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 sabre_DMChandler:
 	;; Cheack if DMC is active
-	LDA channel_trackAddr+17
-	AND channelMuteStatus+8
+	LDA channelMuteStatus+CHANNEL_TRACK_DMC
 	BEQ sabre_updateAPUregisters 
-	;; Check DMC status
-	LDA dmcStatus
-	BNE sabre_updateAPUregisters
 	;; Start new DPCM sample
-	INC dmcStatus
-	LDX channelBaseNote+8
+	LDX channelBaseNote+CHANNEL_TRACK_DMC
 	LDA dpcm_noteToSampleRateAndFlags,x 
 	STA $4010
 	LDY dpcm_noteToSampleTable,x 
@@ -934,7 +929,7 @@ op_NUL:
 	LDY sabreTemp 
 	LDA channelNoteDuration,y 
 	STA channelNoteCountdown,y 
-	JMP sabre_ProcessChannelEnvelopes
+	JMP sabre_ProcessChannelEnvelopes_DMCcheck
 
 op_END_SFX:
 	;; END_SFX - End SFX playback. Restore current channel

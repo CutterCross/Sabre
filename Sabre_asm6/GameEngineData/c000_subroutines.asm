@@ -417,7 +417,8 @@ updateParameterInfo:
 	RTS
 
 loop_soundEquUpdateTiles:
-	ALR #$0F 
+	AND #$0F
+	LSR 
 	TAX 
 	LDY #8
 	LDA #$0B

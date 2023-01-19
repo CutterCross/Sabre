@@ -26,16 +26,18 @@
  - NTSC, PAL, and Dendy tempo & period adjustments
  
 ## Requirements:
- - 1770 bytes ROM
+ - 1753 bytes ROM
  - 42 bytes ZP RAM
- - 122 bytes non-ZP RAM 
+ - 121 bytes non-ZP RAM 
  
 ## Usage Notes:
  - Assign DPCM samples to 1 instrument only
  - No DPCM for SFX  
  - No envelopes larger than size 254
  - No Hi-Pitch envelopes 
+ - No Release points for envelopes
  - Pitch envelopes have no effect on Noise channel
+ - Non-looping Pitch envelopes should end with 0
  - Do not expand effect columns to more than 1 effect per channel
  - BXX, C00, and D00 should only be placed in the first active channel (left -> right)
  - FXX and ZXX will be clobbered by BXX, C00, or D00 on the same row
