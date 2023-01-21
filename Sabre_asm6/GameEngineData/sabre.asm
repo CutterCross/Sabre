@@ -75,7 +75,8 @@ sabre_initAPU:
 	STX regionTickRate_SFX
 	LDA soundRegion
 	CMP #REGION_PAL
-	BNE +NTSC_Dendy
+	BCC +NTSC
+		;; PAL and Dendy tempo adjustment
 		LDX #REGION_TICK_PAL
 	.ifdef ADJ_REGION_TEMPO_TRACK
 		STX regionTickRate_track
@@ -83,7 +84,7 @@ sabre_initAPU:
 	.ifdef ADJ_REGION_TEMPO_SFX
 		STX regionTickRate_SFX
 	.endif 
-+NTSC_Dendy:
++NTSC:
 	RTS
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

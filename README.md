@@ -1,9 +1,9 @@
 # Sabre
  ![](SabreLogo.png)
  
- Sabre is a lightweight sound driver for NES homebrew projects, compatible with FamiTracker TXT data. 
+ Sabre is a lightweight sound driver for NES homebrew projects, compatible with [FamiTracker](https://github.com/Dn-Programming-Core-Management/Dn-FamiTracker "Dn-FamiTracker GitHub Page") TXT export data. 
  
- Currently only written for ASM6.
+ Currently only written for [ASM6 / ASM6F](https://github.com/freem/asm6f "ASM6F Github Page")
  
 ## Features:
  - Note range: A0 - B7
@@ -59,8 +59,7 @@
  - Export as FT TXT through File -> Export Text.
  
 ## Converting with sabre\_ft\_txt\_asm6.py: 
- You must have Python installed in order to execute .py modules. Python 3.X and above are recommended.
- You can download the current version of Python from https://www.python.org/ 
+ You must have [Python](https://www.python.org/downloads/ "Python Downloads Page") installed in order to execute .py modules. Python 3 and above are recommended.
  
  Drag your exported FT TXT file to `sabre_ft_txt_asm6.py`. 
  
@@ -110,7 +109,7 @@
  
 #### Differences Between sabre.asm and sabre\_uo.asm:
  - `sabre.asm`: Use if your project does not use unofficial CPU opcodes.
- - `sabre_uo.asm`: Uses unofficial CPU opcodes ANC {#imm}, AXS {#imm}, LAX {zp}, and DCP {abs,y}. 
+ - `sabre_uo.asm`: Uses unofficial CPU opcodes ANC {#imm}, AXS {#imm}, LAX {zp}, and DCP {abs,y}. (Requires ASM6F)
  
 ## Using Sabre in Your Project:
 
