@@ -26,7 +26,7 @@
  - NTSC, PAL, and Dendy tempo & period adjustments
  
 ## Requirements:
- - 1753 bytes ROM
+ - 1757 bytes ROM
  - 42 bytes ZP RAM
  - 121 bytes non-ZP RAM 
  
@@ -137,12 +137,19 @@
  
  Replace the default UNROM bankswitch subroutine call (located in the `sabre_playTrack` subroutine of the `sabre.asm` file) with your own bankswitch routine: 
  ```
- ;;;; Custom bankswitch here!
- .ifdef BANKSWITCH_TRACKS
- 	TAY
- 	JSR UNROM_bankswitchNoSave
- .endif
- ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;;; Custom bankswitch here!
+	.ifdef BANKSWITCH_TRACKS
+		TAY
+		JSR UNROM_bankswitchNoSave
+	.endif
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ ```
+ Depending on your setup, you may need to swap in the previous PRG bank near the end of the `sabre_playTrack` subroutine:
+ ```
+	;;;; Custom return bankswitch here, if needed
+	
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ endPlayTrack:
  ```
  If you keep the `BANKSWITCH_TRACKS` build flag, ensure that it is enabled in `sabre_includes.asm`.
  
@@ -150,7 +157,7 @@
  If you are not bankswitching tracks, either disable the `BANKSWITCH_TRACKS` build flag, or delete the default UNROM bankswitch section in the `sabre_playTrack` subroutine.
  
 ### Playing Tracks and SFX:
- The top of your exported `{filename}_static.asm` file will contain a set of constants for each track and SFX index. 
+ Your exported `{filename}_static.asm` file will contain a set of constants for each track and SFX index. 
  
  To play a track, store one of these constant track values into `currentTrack`, and then call `sabre_playTrack`:
  ```

@@ -1,4 +1,4 @@
-;;;; SABRE Sound Engine ;;;;
+;;;; SABRE Sound Driver ;;;;
 
 NTSC_PTNperiodTable_lo:
 	.db <$07F1, <$077F, <$0713
@@ -173,6 +173,9 @@ setChannelTrackAddresses:
 	;; Initialize DMC
 	LDA #%00001111
 	STA $4015
+	;;;; Custom return bankswitch here, if needed
+
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 endPlayTrack:
 	PLA 
 	TAY
@@ -430,7 +433,7 @@ sabre_ProcessChannelEnvelopes_DMCcheck:
 	BCC sabre_ProcessChannelEnvelopes
 		;; Skip envelope handling for DMC
 		JMP sabre_updateAPUregisters
-sabre_ProcessChannelEnvelopes
+sabre_ProcessChannelEnvelopes:
 	STX sabreTemp 
 	TYA 
 	TAX
@@ -770,25 +773,27 @@ sabre_updateAPUregisters:
 	LDA trackTempoElapsed
 	CLC
 	ADC trackTempo 
+	BCS incTrackSpeedElapsed
 	CMP regionTickRate_track
 	BCC +
-		-
+	incTrackSpeedElapsed:
 		SBC regionTickRate_track
 		INC trackSpeedElapsed
 		CMP regionTickRate_track
-		BCS -
+		BCS incTrackSpeedElapsed
 	+
 	STA trackTempoElapsed
 	;; Update SFX tempo 
 	LDA SFXtempoElapsed 
 	ADC SFXtempo 
+	BCS incSFXspeedElapsed
 	CMP regionTickRate_SFX 
 	BCC +
-		-
+	incSFXspeedElapsed:
 		SBC regionTickRate_SFX
 		INC SFXspeedElapsed
 		CMP regionTickRate_SFX
-		BCS -
+		BCS incSFXspeedElapsed
 	+
 	STA SFXtempoElapsed
 	PLA 
