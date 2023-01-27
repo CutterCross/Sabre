@@ -156,19 +156,22 @@
 ### If Not Bankswitching Tracks:
  If you are not bankswitching tracks, either disable the `BANKSWITCH_TRACKS` build flag, or delete the default UNROM bankswitch section in the `sabre_playTrack` subroutine.
  
+ 
 ### Playing Tracks and SFX:
  Your exported `{filename}_static.asm` file will contain a set of constants for each track and SFX index. 
  
- To play a track, store one of these constant track values into `currentTrack`, and then call `sabre_playTrack`:
+ To play a track, store one of these constant track values into `currentTrack`. Calling `sabre_playTrack` will play the current track index stored in `currentTrack`:
  ```
  LDA #_default_track0
  STA currentTrack 
+ ;; ...
  JSR sabre_playTrack
  ```
- To play SFX, store one of these constant SFX values into `currentSFX`, and then call `sabre_playSFX`:
+ To play SFX, store one of these constant SFX values into `currentSFX`. Calling `sabre_playSFX` will play the current SFX index stored in `currentSFX`:
  ```
  LDA #_sfx_sfx0
  STA currentSFX
+ ;; ...
  JSR sabre_playSFX
  ```
  To stop music playback, call `sabre_stopTrack`:
