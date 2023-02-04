@@ -26,7 +26,7 @@
  - NTSC, PAL, and Dendy tempo & period adjustments
  
 ## Requirements:
- - 1757 bytes ROM
+ - 1748 bytes ROM
  - 42 bytes ZP RAM
  - 121 bytes non-ZP RAM 
  

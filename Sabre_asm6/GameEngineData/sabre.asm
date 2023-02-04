@@ -38,35 +38,29 @@ sabre_registerInitTable:
 	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-sabre_initAPU:
+sabre_initAPU: 
 	LDX #19
 	-
-	LDA sabre_registerInitTable,x
-	STA $4000,x 		;; Initialize APU and shadow APU registers
-	STA apuShadow4000,x
-	DEX  
-	BPL -
-	LDA #%00001111		;; Enable Pulse 1, Pulse 2, Triangle, Noise
-	STA $4015
-	LDA #0				;; Won't be writing to $400F again
-	STA $400F			;; But must be written once after Noise channel is enabled
-	STA apuSFX4000
-	STA apuSFX4004
-	STA apuSFX4008
-	STA apuSFX400C
-	STA apuLast4003
-	STA apuLast4007
-	STA currentTrackPRGbank		;; Set track PRG bank to 0 [Default]
-	LDX #8
-	-
-	STA channel_trackAddr,x 	;; Initialize track addresses to 0
+	LDA sabre_registerInitTable,x 
+	STA $4000,x 				;; Initialize hardware APU registers
 	DEX 
 	BPL -
+	LDA #%00001111				;; Enable Pulse 1, Pulse 2, Triangle, and Noise channels
+	STA $4015 
+	LDA #0 						;; Won't be writing to $400F again
+	STA $400F 					;; But must be written once after Noise channel is enabled
+	STA currentTrackPRGbank		;; Set track PRG bank to 0 [Default]
+	LDX #23
+	-
+	STA apuShadow4000,x 		;; Initialize shadow APU registers to 0
+	STA channel_trackAddr,x 	;; Initialize track addresses to 0
+	DEX 						;; [It's okay if writes bleed into channel_patternOffsetAddr]
+	BPL -
+	STX sabrePauseStatus
 	TXA
-	STA sabrePauseStatus		;; Initialize pause status to unpaused
 	LDX #8
 	-
-	STA channelMuteStatus,x		;; Initialized all channels to unmuted
+	STA channelMuteStatus,x 	;; Unmute all channels
 	DEX 
 	BPL -
 	;; Determine region tick rate [NTSC / PAL / Dendy]
@@ -812,16 +806,24 @@ sabre_updateAPUregisters:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 sabre_stopTrack:
-	;;;; Stop sing playback of all channels
+	;;;; Stop playback of all music channels
+	TYA 
+	PHA
 	LDA #0
-	LDY #17
+	;; Clear track addresses - hi
+	STA channel_trackAddr+1
+	STA channel_trackAddr+5
+	STA channel_trackAddr+9
+	STA channel_trackAddr+13
+	STA channel_trackAddr+17
+	;; Clear track envelope steps
+	LDY #26
 	-
-	STA channel_trackAddr,y 
-	STA channelVolEnvelopeStep,y
-	STA channelPitchEnvelopeStep,y
+	STA channelVolEnvelopeStep,y 
+	DEY 
 	DEY 
 	BPL -
-	;; Clear volume registers
+	;; Clear track volume registers
 	STA apuShadow4000
 	STA apuShadow4004
 	STA apuShadow4008
@@ -829,6 +831,8 @@ sabre_stopTrack:
 	;; Stop DMC 
 	LDA #%00001111
 	STA $4015
+	PLA 
+	TAY
 	RTS
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
