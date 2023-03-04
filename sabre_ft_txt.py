@@ -674,17 +674,8 @@ def write_asm(music_data:Music, filename:str, mode:str):
 
 if __name__ == "__main__":
 	if len(sys.argv) < 2:
-		print(f"Usage: {sys.argv[0]} [--ca65] <filename.txt> [output prefix]")
+		print(f"Usage: {sys.argv[0]} <filename.txt> [output prefix]")
 		sys.exit()
-
-	mode = "asm6"
-	for arg in sys.argv:
-		if arg.startswith("--"):
-			if arg == "--ca65":
-				mode = "ca65"
-			else:
-				print(f"Unkown option {arg}")
-				sys.exit()
 
 	ord_args = list(filter(lambda x: not x.startswith("--"), sys.argv))
 	
@@ -698,4 +689,4 @@ if __name__ == "__main__":
 		sys.exit()
 
 	music_data = read_ft_txt(ord_args[1])
-	write_asm(music_data, filename, mode)
+	write_asm(music_data, filename, "ca65")
