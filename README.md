@@ -58,18 +58,20 @@
  - Only use alphanumeric characters in instrument, track, and SFX names.
  - Export as FT TXT through File -> Export Text.
  
-## Converting with sabre\_ft\_txt\_asm6.py: 
- You must have [Python](https://www.python.org/downloads/ "Python Downloads Page") installed in order to execute .py modules. Python 3 and above are recommended.
+## Converting with sabre\_ft\_txt.py: 
+ You must have [Python 3.7 or above](https://www.python.org/downloads/ "Python Downloads Page") installed in order to execute .py modules.
  
- Drag your exported FT TXT file to `sabre_ft_txt_asm6.py`. 
+ Drag your exported FT TXT file to `sabre_ft_txt.py`. 
  
  Alternatively, you can run via the command line.
  ```
- python sabre_ft_txt_asm6.py {filename}.txt {title}
+ python sabre_ft_txt.py [--ca65] {filename}.txt [title]
  ```
  Replace `{filename}` with the name of your exported FT txt file 
  
- (Optional) Replace `{title}` to use a different prefix than `{filename}` for your output files.
+ (Optional) Replace `[title]` to use a different prefix than `{filename}` for your output files.
+
+ (Optional) Include the `--ca65` flag to export with ca65 syntax, otherwise asm6 syntax is used by default.
  
  If no files are created, there was likely a runtime error. Running via the command line can help list any errors that occur.
  
