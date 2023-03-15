@@ -59,7 +59,7 @@
  - Export as FT TXT through File -> Export Text.
  
 ## Converting with sabre\_ft\_txt.py: 
- You must have [Python](https://www.python.org/downloads/ "Python Downloads Page") installed in order to execute .py modules. Python 3 and above are recommended.
+ You must have [Python 3.7 or above](https://www.python.org/downloads/ "Python Downloads Page") installed in order to execute .py modules.
  
  Drag your exported FT TXT file to `sabre_ft_txt.py`. 
  
@@ -69,7 +69,9 @@
  ```
  Replace `{filename}` with the name of your exported FT txt file 
  
- (Optional) Replace `{title}` to use a different prefix than `{filename}` for your output files.
+ (Optional) Replace `[title]` to use a different prefix than `{filename}` for your output files.
+
+ The exported assembly should be valid for either asm6 or ca65.
  
  If no files are created, there was likely a runtime error. Running via the command line can help list any errors that occur.
  
