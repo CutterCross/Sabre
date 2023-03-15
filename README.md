@@ -3,7 +3,7 @@
  
  Sabre is a lightweight sound driver for NES homebrew projects, compatible with [FamiTracker](https://github.com/Dn-Programming-Core-Management/Dn-FamiTracker "Dn-FamiTracker GitHub Page") TXT export data. 
  
- Currently only written for [ASM6 / ASM6F](https://github.com/freem/asm6f "ASM6F Github Page")
+ Written for [ASM6 / ASM6F](https://github.com/freem/asm6f "ASM6F GitHub Page") and [CA65] (https://github.com/cc65/cc65 "CC65 GitHub Page")
  
 ## Features:
  - Note range: A0 - B7
@@ -58,14 +58,14 @@
  - Only use alphanumeric characters in instrument, track, and SFX names.
  - Export as FT TXT through File -> Export Text.
  
-## Converting with sabre\_ft\_txt\_asm6.py: 
+## Converting with sabre\_ft\_txt.py: 
  You must have [Python](https://www.python.org/downloads/ "Python Downloads Page") installed in order to execute .py modules. Python 3 and above are recommended.
  
- Drag your exported FT TXT file to `sabre_ft_txt_asm6.py`. 
+ Drag your exported FT TXT file to `sabre_ft_txt.py`. 
  
  Alternatively, you can run via the command line.
  ```
- python sabre_ft_txt_asm6.py {filename}.txt {title}
+ python sabre_ft_txt.py {filename}.txt {title}
  ```
  Replace `{filename}` with the name of your exported FT txt file 
  
@@ -83,35 +83,24 @@
  - `{filename}_dpcm.asm`: If this file is generated, include in `UNROM_Bank07_static.asm`.
  - `{filename}_{bankNo.}.asm`: Include in the corresponding UNROM_Bank file in the `BankData` folder. (Default bank is $00.)
  
-## Including Sabre in Your Project (ASM6):
- - `sabre_includes.asm`: Include at the top of your program, along with any other program constants you have defined.
- - `sabre_ZP_RAM.asm`: Include in your Zero Page RAM defines.
- ```
- .enum $0000
- ;; ...
- .include "sabre_ZP_RAM.asm"
- .ende
- ```
- - `sabre_Misc_RAM.asm`: Include somewhere else in your RAM defines. 
- ```
- .enum $0100
- ;; ...
- .include "sabre_Misc_RAM.asm"
- .ende
- ```
- - `sabre.asm`: Include where you want the driver to be stored.
- 
-#### Build Flags in sabre\_includes.asm:
- - `UNOFFICIAL_OPS`: Used by the Sabre replayer source to swap between `sabre.asm` and `sabre_uo.asm`.
+### Build Flags in sabre\_includes.asm:
+ - `UNOFFICIAL_OPS`: Enables use of unofficial CPU opcodes in the Sabre driver for slightly better performance. (AXS {#imm}, DCP {abs,y}, and LAX {zp}) May break compatibility with certain emulators and famiclones.
  - `BANKSWITCH_TRACKS`: Used by the Sabre replayer and driver to bankswitch each track's corresponding PRG bank.
  - `ADJ_REGION_TEMPO_TRACK`: Enables tempo adjustment for music between NTSC, PAL, and Dendy regions.
  - `ADJ_REGION_TEMPO_SFX`: Enables tempo adjustment for SFX between NTSC, PAL, and Dendy regions. 
- 
-#### Differences Between sabre.asm and sabre\_uo.asm:
- - `sabre.asm`: Use if your project does not use unofficial CPU opcodes.
- - `sabre_uo.asm`: Uses unofficial CPU opcodes ANC {#imm}, AXS {#imm}, LAX {zp}, and DCP {abs,y}. (Requires ASM6F)
- 
+
+### Composing Tips for Reducing Data Size:
+ - Write channel patterns in ways which you can reuse them often.
+ - Reuse instrument envelopes often.
+ - Space out notes in ways that correspond to the common note lengths in `sabre_includes.asm`. (Example: NL4 = Next note in 4 rows)
+ - Contiguous notes with the same note length do not use redundant data.
+ - Contiguous notes with the same instrument do not use redundant data.
+ - Contiguous notes with the same note period do not use redundant data. (Exception: Following change in note length or FT effect)
+
 ## Using Sabre in Your Project:
+
+ [ASM6 Include Guide](Sabre_asm6/README_ASM6.md)
+ [CA65 Include Guide](Sabre_ca65/README_CA65.md)
 
 ### Initialization:
  In your program's initialization, store your desired region value into `soundRegion`, and then call `sabre_initAPU`.
@@ -193,14 +182,5 @@
  STA channelMuteStatus+CHANNEL_TRACK_PULSE1
  ```
  All of these channel number constants can be found in `sabre_includes.asm`.
-
-## Composing Tips for Reducing Data Size:
- - Write channel patterns in ways which you can reuse them often.
- - Reuse instrument envelopes often.
- - Space out notes in ways that correspond to the common note lengths in `sabre_includes.asm`. (Example: NL4 = Next note in 4 rows)
- - Contiguous notes with the same note length do not use redundant data.
- - Contiguous notes with the same instrument do not use redundant data.
- - Contiguous notes with the same note period do not use redundant data. (Exception: Following change in note length or FT effect)
-
-
+ 
  

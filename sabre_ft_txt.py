@@ -58,6 +58,9 @@ class Envelope:
 		if (len(self.envelope) < 1):
 			raise RuntimeError('Tried to create empty envelope')
 
+		# turn signed numbers into bytes
+		self.envelope = list(map(lambda x: x % 256, self.envelope))
+
 		self.loop_point = loop_point
 		# assert loop point constrant
 		if (self.loop_point == -1 or self.loop_point >= len(self.envelope)):
@@ -512,16 +515,25 @@ def pretty_print(list, size, prefix, format="{0}") -> str:
 	return buffer
 
 # writes Music object into Sabre-formatted assembly data
-def write_asm(music_data:Music, filename:str):
+def write_asm(music_data:Music, filename:str, mode:str):
 	static_buffer:str = ""
+
+	if mode == "asm6":
+		define_byte = ".db"
+		define_word = ".dw"
+	elif mode == "ca65":
+		define_byte = ".byte"
+		define_word = ".word"
+	else:
+		raise RuntimeWarning("Unknwon assembly mode")
 
 	# track counts and headers
 	sfx_count = len(music_data.get_tracks_by_group("sfx"))
 	track_count = len(music_data.tracks)-sfx_count
 	static_buffer += "sabre_maxTracks:\n"
-	static_buffer += f"\t.db {track_count}\n"
+	static_buffer += f"\t{define_byte} {track_count}\n"
 	static_buffer += "sabre_maxSFX:\n"
-	static_buffer += f"\t.db {sfx_count}\n\n"
+	static_buffer += f"\t{define_byte} {sfx_count}\n\n"
 
 	track_names = []
 	sfx_names = []
@@ -533,20 +545,20 @@ def write_asm(music_data:Music, filename:str):
 
 	static_buffer += "trackHeaderTable_lo:\n"
 	for label in track_names:
-		static_buffer += f"\t.db <{label}_header\n"
+		static_buffer += f"\t{define_byte} <{label}_header\n"
 	static_buffer += "trackHeaderTable_hi:\n"
 	for label in track_names:
-		static_buffer += f"\t.db >{label}_header\n"
-	static_buffer += "trackTable_PRGbank:\n\t.db "
+		static_buffer += f"\t{define_byte} >{label}_header\n"
+	static_buffer += f"trackTable_PRGbank:\n\t{define_byte} "
 	static_buffer += ','.join([f'${x.group_hex:02x}' for x in music_data.get_nonsfx_tracks()])
 	static_buffer += "\n\n"
 
 	static_buffer += "sfxHeaderTable_lo:\n"
 	for label in sfx_names:
-		static_buffer += f"\t.db <{label}_header\n"
+		static_buffer += f"\t{define_byte} <{label}_header\n"
 	static_buffer += "sfxHeaderTable_hi:\n"
 	for label in sfx_names:
-		static_buffer += f"\t.db >{label}_header\n"
+		static_buffer += f"\t{define_byte} >{label}_header\n"
 	static_buffer += "\n"
 
 	if track_count > 0:
@@ -565,24 +577,24 @@ def write_asm(music_data:Music, filename:str):
 	for i, env in enumerate(music_data.envelopes):
 		static_buffer += f"env{i}:\n"
 		env_str = ",".join(map(str, env.envelope))
-		static_buffer += f"\t.db {env_str},ENV_LOOP,{env.loop_point}\n"
+		static_buffer += f"\t{define_byte} {env_str},ENV_LOOP,{env.loop_point}\n"
 
 	static_buffer += "\n"
 
 	# instrument header table
 	static_buffer += "instrumentHeaderTable:\n"
 	for inst in music_data.instruments:
-		static_buffer += f"\t.dw {inst.label()}\n"
+		static_buffer += f"\t{define_word} {inst.label()}\n"
 
 	static_buffer += "\n"
 
 	# instruments
 	for inst in music_data.instruments:
 		static_buffer += f"{inst.label()}:\n"
-		static_buffer += f"\t.dw env{inst.volume}\n"
-		static_buffer += f"\t.dw env{inst.arpeggio}\n"
-		static_buffer += f"\t.dw env{inst.pitch}\n"
-		static_buffer += f"\t.dw env{inst.duty}\n"
+		static_buffer += f"\t{define_word} env{inst.volume}\n"
+		static_buffer += f"\t{define_word} env{inst.arpeggio}\n"
+		static_buffer += f"\t{define_word} env{inst.pitch}\n"
+		static_buffer += f"\t{define_word} env{inst.duty}\n"
 
 	static_buffer += "\n"
 	
@@ -590,32 +602,32 @@ def write_asm(music_data:Music, filename:str):
 
 	static_buffer += "dpcm_sampleAddressTable:\n"
 	for sample in music_data.samples:
-		static_buffer += f"\t.db <({sample.label()} >> 6)\n"
+		static_buffer += f"\t{define_byte} <({sample.label()} >> 6)\n"
 	static_buffer += "\n"
 
 	static_buffer += "dpcm_noteToSampleTable:"
-	static_buffer += pretty_print(music_data.sampleNotes, 24, "\n\t.db ", "${0:02x}")
+	static_buffer += pretty_print(music_data.sampleNotes, 24, f"\n\t{define_byte} ", "${0:02x}")
 	static_buffer += "\n"
 	static_buffer += "dpcm_noteToSampleRateAndFlags:"
-	static_buffer += pretty_print(music_data.samplePitches, 24, "\n\t.db ", "${0:02x}")
+	static_buffer += pretty_print(music_data.samplePitches, 24, f"\n\t{define_byte} ", "${0:02x}")
 	static_buffer += "\n"
 	static_buffer += "dpcm_noteToSampleLength:"
 	lengths = [music_data.sample_length(i) for i in music_data.sampleNotes]
-	static_buffer += pretty_print(lengths, 24, "\n\t.db ", "${0:02x}")
+	static_buffer += pretty_print(lengths, 24, f"\n\t{define_byte} ", "${0:02x}")
 	static_buffer += "\n\n"
 
 	for sfx in music_data.get_tracks_by_group("sfx"):
 		static_buffer += f"{sfx.label()}_header:\n"
-		static_buffer += f"\t.db {sfx.speed}\n"
-		static_buffer += f"\t.db {sfx.tempo}\n"
+		static_buffer += f"\t{define_byte} {sfx.speed}\n"
+		static_buffer += f"\t{define_byte} {sfx.tempo}\n"
 		SFX_CHANNELS = CHANNELS[:len(CHANNELS)-1]
 		for i,ch in enumerate(SFX_CHANNELS):
 			label = sfx.label() if sfx.check_channel_used(i) else "NULL"
-			static_buffer += f"\t.dw {label}_{ch}\n"
+			static_buffer += f"\t{define_word} {label}_{ch}\n"
 		for i,ch in enumerate(SFX_CHANNELS):
 			if sfx.check_channel_used(i):
 				static_buffer += f"{sfx.label()}_{ch}:"
-				static_buffer += pretty_print(compile_sabre_pattern(sfx.patterns[ch][0],ch,True),10,"\n\t.db ")
+				static_buffer += pretty_print(compile_sabre_pattern(sfx.patterns[ch][0],ch,True),10,f"\n\t{define_byte} ")
 				static_buffer += "\n"
 		static_buffer += "\n"
 
@@ -627,7 +639,7 @@ def write_asm(music_data:Music, filename:str):
 
 		for sample in music_data.samples:
 			dpcm_buffer += f"{sample.label()}:"
-			dpcm_buffer += pretty_print(sample.data, 24, "\n\t.db ", "${0:02x}")
+			dpcm_buffer += pretty_print(sample.data, 24, f"\n\t{define_byte} ", "${0:02x}")
 			dpcm_buffer += "\n\n"
 
 		with open(f"{filename}_dpcm.asm", "w") as f:
@@ -638,22 +650,22 @@ def write_asm(music_data:Music, filename:str):
 		buffer = ""
 		for track in tracks:
 			buffer += f"{track.label()}_header:\n"
-			buffer += f"\t.db {track.speed}\n"
-			buffer += f"\t.db {track.tempo}\n"
-			buffer += f"\t.db {len(track.orders[CHANNELS[0]])}\n"
+			buffer += f"\t{define_byte} {track.speed}\n"
+			buffer += f"\t{define_byte} {track.tempo}\n"
+			buffer += f"\t{define_byte} {len(track.orders[CHANNELS[0]])}\n"
 			for i,ch in enumerate(CHANNELS):
 				label = track.label() if track.check_channel_used(i) else "NULL"
-				buffer += f"\t.dw {label}_{ch}\n"
+				buffer += f"\t{define_word} {label}_{ch}\n"
 			buffer += "\n"
 			for i,ch in enumerate(CHANNELS):
 				if track.check_channel_used(i):
 					buffer += f"{track.label()}_{ch}:\n"
 					for order in track.orders[ch]:
-						buffer += f"\t.dw {track.label()}_{ch}_pattern{str(order)}\n"
+						buffer += f"\t{define_word} {track.label()}_{ch}_pattern{str(order)}\n"
 					for pattern in [*set(track.orders[ch])]:
 						patt_commands = compile_sabre_pattern(track.patterns[ch][pattern],ch)
 						buffer += f"{track.label()}_{ch}_pattern{pattern}:"
-						buffer += pretty_print(patt_commands,10,"\n\t.db ")
+						buffer += pretty_print(patt_commands,10,f"\n\t{define_byte} ")
 						buffer += "\n"
 					buffer += "\n"
 		
@@ -664,15 +676,17 @@ if __name__ == "__main__":
 	if len(sys.argv) < 2:
 		print(f"Usage: {sys.argv[0]} <filename.txt> [output prefix]")
 		sys.exit()
-	
-	filename, extension = os.path.splitext(sys.argv[1])
 
-	if len(sys.argv) > 2:
-		filename = sys.argv[2]
+	ord_args = list(filter(lambda x: not x.startswith("--"), sys.argv))
+	
+	filename, extension = os.path.splitext(ord_args[1])
+
+	if len(ord_args) > 2:
+		filename = ord_args[2]
 
 	if extension.lower() != ".txt":
 		print("Input file must have txt extension")
 		sys.exit()
 
-	music_data = read_ft_txt(sys.argv[1])
-	write_asm(music_data, filename)
+	music_data = read_ft_txt(ord_args[1])
+	write_asm(music_data, filename, "ca65")

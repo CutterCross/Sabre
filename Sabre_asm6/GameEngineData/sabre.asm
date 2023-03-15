@@ -1,75 +1,75 @@
 ;;;; SABRE Sound Driver ;;;;
 
 NTSC_PTNperiodTable_lo:
-	.db <$07F1, <$077F, <$0713
-    .db <$06AD, <$064D, <$05F3, <$059D, <$054C, <$0500, <$04B8, <$0474, <$0434, <$03F8, <$03BF, <$0389
-    .db <$0356, <$0326, <$02F9, <$02CE, <$02A6, <$0280, <$025C, <$023A, <$021A, <$01FB, <$01DF, <$01C4
-    .db <$01AB, <$0193, <$017C, <$0167, <$0152, <$013F, <$012D, <$011C, <$010C, <$00FD, <$00EF, <$00E1
-    .db <$00D5, <$00C9, <$00BD, <$00B3, <$00A9, <$009F, <$0096, <$008E, <$0086, <$007E, <$0077, <$0070
-    .db <$006A, <$0064, <$005E, <$0059, <$0054, <$004F, <$004B, <$0046, <$0042, <$003F, <$003B, <$0038
-    .db <$0034, <$0031, <$002F, <$002C, <$0029, <$0027, <$0025, <$0023, <$0021, <$001F, <$001D, <$001B
-    .db <$001A, <$0018, <$0017, <$0015, <$0014, <$0013, <$0012, <$0011, <$0010, <$000F, <$000E, <$000D
+	.byte <$07F1, <$077F, <$0713
+    .byte <$06AD, <$064D, <$05F3, <$059D, <$054C, <$0500, <$04B8, <$0474, <$0434, <$03F8, <$03BF, <$0389
+    .byte <$0356, <$0326, <$02F9, <$02CE, <$02A6, <$0280, <$025C, <$023A, <$021A, <$01FB, <$01DF, <$01C4
+    .byte <$01AB, <$0193, <$017C, <$0167, <$0152, <$013F, <$012D, <$011C, <$010C, <$00FD, <$00EF, <$00E1
+    .byte <$00D5, <$00C9, <$00BD, <$00B3, <$00A9, <$009F, <$0096, <$008E, <$0086, <$007E, <$0077, <$0070
+    .byte <$006A, <$0064, <$005E, <$0059, <$0054, <$004F, <$004B, <$0046, <$0042, <$003F, <$003B, <$0038
+    .byte <$0034, <$0031, <$002F, <$002C, <$0029, <$0027, <$0025, <$0023, <$0021, <$001F, <$001D, <$001B
+    .byte <$001A, <$0018, <$0017, <$0015, <$0014, <$0013, <$0012, <$0011, <$0010, <$000F, <$000E, <$000D
 NTSC_PTNperiodTable_hi:
-	.db >$07F1, >$077F, >$0713
-    .db >$06AD, >$064D, >$05F3, >$059D, >$054C, >$0500, >$04B8, >$0474, >$0434, >$03F8, >$03BF, >$0389
-    .db >$0356, >$0326, >$02F9, >$02CE, >$02A6, >$0280, >$025C, >$023A, >$021A, >$01FB, >$01DF, >$01C4
-    .db >$01AB, >$0193, >$017C, >$0167, >$0152, >$013F, >$012D, >$011C, >$010C
+	.byte >$07F1, >$077F, >$0713
+    .byte >$06AD, >$064D, >$05F3, >$059D, >$054C, >$0500, >$04B8, >$0474, >$0434, >$03F8, >$03BF, >$0389
+    .byte >$0356, >$0326, >$02F9, >$02CE, >$02A6, >$0280, >$025C, >$023A, >$021A, >$01FB, >$01DF, >$01C4
+    .byte >$01AB, >$0193, >$017C, >$0167, >$0152, >$013F, >$012D, >$011C, >$010C
 PAL_PTNperiodTable_lo:
-	.db <$0760, <$06F6, <$0692
-    .db <$0634, <$05DB, <$0586, <$0537, <$04EC, <$04A5, <$0462, <$0423, <$03E8, <$03B0, <$037B, <$0349
-    .db <$0319, <$02ED, <$02C3, <$029B, <$0275, <$0252, <$0231, <$0211, <$01F3, <$01D7, <$01BD, <$01A4
-    .db <$018C, <$0176, <$0161, <$014D, <$013A, <$0129, <$0118, <$0108, <$00F9, <$00EB, <$00DE, <$00D1
-    .db <$00C6, <$00BA, <$00B0, <$00A6, <$009D, <$0094, <$008B, <$0084, <$007C, <$0075, <$006E, <$0068
-    .db <$0062, <$005D, <$0057, <$0052, <$004E, <$0049, <$0045, <$0041, <$003E, <$003A, <$0037, <$0034
-    .db <$0031, <$002E, <$002B, <$0029, <$0026, <$0024, <$0022, <$0020, <$001E, <$001D, <$001B, <$0019
-    .db <$0018, <$0016, <$0015, <$0014, <$0013, <$0012, <$0011, <$0010, <$000F, <$000E, <$000D, <$000C
+	.byte <$0760, <$06F6, <$0692
+    .byte <$0634, <$05DB, <$0586, <$0537, <$04EC, <$04A5, <$0462, <$0423, <$03E8, <$03B0, <$037B, <$0349
+    .byte <$0319, <$02ED, <$02C3, <$029B, <$0275, <$0252, <$0231, <$0211, <$01F3, <$01D7, <$01BD, <$01A4
+    .byte <$018C, <$0176, <$0161, <$014D, <$013A, <$0129, <$0118, <$0108, <$00F9, <$00EB, <$00DE, <$00D1
+    .byte <$00C6, <$00BA, <$00B0, <$00A6, <$009D, <$0094, <$008B, <$0084, <$007C, <$0075, <$006E, <$0068
+    .byte <$0062, <$005D, <$0057, <$0052, <$004E, <$0049, <$0045, <$0041, <$003E, <$003A, <$0037, <$0034
+    .byte <$0031, <$002E, <$002B, <$0029, <$0026, <$0024, <$0022, <$0020, <$001E, <$001D, <$001B, <$0019
+    .byte <$0018, <$0016, <$0015, <$0014, <$0013, <$0012, <$0011, <$0010, <$000F, <$000E, <$000D, <$000C
 PAL_PTNperiodTable_hi:
-	.db >$0760, >$06F6, >$0692
-    .db >$0634, >$05DB, >$0586, >$0537, >$04EC, >$04A5, >$0462, >$0423, >$03E8, >$03B0, >$037B, >$0349
-    .db >$0319, >$02ED, >$02C3, >$029B, >$0275, >$0252, >$0231, >$0211, >$01F3, >$01D7, >$01BD, >$01A4
-    .db >$018C, >$0176, >$0161, >$014D, >$013A, >$0129, >$0118, >$0108, >$00F9
+	.byte >$0760, >$06F6, >$0692
+    .byte >$0634, >$05DB, >$0586, >$0537, >$04EC, >$04A5, >$0462, >$0423, >$03E8, >$03B0, >$037B, >$0349
+    .byte >$0319, >$02ED, >$02C3, >$029B, >$0275, >$0252, >$0231, >$0211, >$01F3, >$01D7, >$01BD, >$01A4
+    .byte >$018C, >$0176, >$0161, >$014D, >$013A, >$0129, >$0118, >$0108, >$00F9
 
 sabre_registerInitTable:
-	.db $30,$08,$00,$00
-	.db $30,$08,$00,$00
-	.db $80,$00,$00,$00
-	.db $30,$00,$00,$00
-	.db $00,$00,$00,$00
+	.byte $30,$08,$00,$00
+	.byte $30,$08,$00,$00
+	.byte $80,$00,$00,$00
+	.byte $30,$00,$00,$00
+	.byte $00,$00,$00,$00
 	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 sabre_initAPU: 
 	LDX #19
-	-
+@loop_initAPUregs:
 	LDA sabre_registerInitTable,x 
 	STA $4000,x 				;; Initialize hardware APU registers
 	DEX 
-	BPL -
+	BPL @loop_initAPUregs
 	LDA #%00001111				;; Enable Pulse 1, Pulse 2, Triangle, and Noise channels
 	STA $4015 
 	LDA #0 						;; Won't be writing to $400F again
 	STA $400F 					;; But must be written once after Noise channel is enabled
 	STA currentTrackPRGbank		;; Set track PRG bank to 0 [Default]
 	LDX #23
-	-
+@loop_initTrackAddr_shadowAPUregs:
 	STA apuShadow4000,x 		;; Initialize shadow APU registers to 0
 	STA channel_trackAddr,x 	;; Initialize track addresses to 0
 	DEX 						;; [It's okay if writes bleed into channel_patternOffsetAddr]
-	BPL -
+	BPL @loop_initTrackAddr_shadowAPUregs
 	STX sabrePauseStatus
 	TXA
 	LDX #8
-	-
+@loop_unmuteChannels:
 	STA channelMuteStatus,x 	;; Unmute all channels
 	DEX 
-	BPL -
+	BPL @loop_unmuteChannels
 	;; Determine region tick rate [NTSC / PAL / Dendy]
 	LDX #REGION_TICK_NTSC_DENDY		;; Default
 	STX regionTickRate_track
 	STX regionTickRate_SFX
 	LDA soundRegion
 	CMP #REGION_PAL
-	BCC +NTSC
+	BCC @NTSC
 		;; PAL and Dendy tempo adjustment
 		LDX #REGION_TICK_PAL
 	.ifdef ADJ_REGION_TEMPO_TRACK
@@ -78,7 +78,7 @@ sabre_initAPU:
 	.ifdef ADJ_REGION_TEMPO_SFX
 		STX regionTickRate_SFX
 	.endif 
-+NTSC:
+@NTSC:
 	RTS
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -91,9 +91,9 @@ sabre_playTrack:
 	;; Check if this track index is valid
 	LDY currentTrack
 	CPY sabre_maxTracks
-	BCC +
+	BCC @validTrackIndex
 		JMP endPlayTrack
-	+
+@validTrackIndex:
 	;; Get all info from track header
 	LDA trackHeaderTable_lo,y 
 	STA pointer16 
@@ -119,14 +119,14 @@ sabre_playTrack:
 	STA trackTempoElapsed
 	LDY #8
 	;; Zero out instruments and envelope steps
-	-
+@loop_clearInstEnvelopes:
 	STA channelInstrument,y 
 	STA channelVolEnvelopeStep,y 
 	STA channelArpEnvelopeStep,y
 	STA channelPitchEnvelopeStep,y 
 	DEY 
 	DEY 
-	BPL -
+	BPL @loop_clearInstEnvelopes
 	STA channelDutyEnvelopeStep+2
 	STA noiseDutyEnvelopeStep
 
@@ -148,10 +148,15 @@ setChannelTrackAddresses:
 	LDA (pointer16),y 
 	STA channel_trackAddr+1,x 	;; hi byte
 	INY
+.ifdef UNOFFICIAL_OPS
+	TXA 
+	AXS #252
+.else 
 	INX 
 	INX 
 	INX 
 	INX
+.endif
 	CPY #12
 	BCC setChannelTrackAddresses
 	LDY #0
@@ -205,7 +210,7 @@ sabre_playSFX:
 	LDA #0
 	STA SFXtempoElapsed 
 	LDY #7
-	-
+@loop_clearInstEnvelopes:
 	;; Zero out instruments and envelope steps [SFX]
 	STA channelInstrument,y 
 	STA channelVolEnvelopeStep,y 
@@ -213,7 +218,7 @@ sabre_playSFX:
 	STA channelPitchEnvelopeStep,y 
 	DEY 
 	DEY 
-	BPL -
+	BPL @loop_clearInstEnvelopes
 	STA channelDutyEnvelopeStep+3
 	STA noiseDutyEnvelopeStep+1
 
@@ -233,11 +238,15 @@ setChannelSFXaddresses:
 	STA channel_trackAddr+1,x 	;; hi byte
 	STA channel_patternOffsetAddr+1,x 
 	INY
+.ifdef UNOFFICIAL_OPS 
 	TXA 
+	AXS #252
+.else
 	INX 
 	INX 
 	INX 
 	INX
+.endif
 	CPY #9
 	BCC setChannelSFXaddresses
 	;; Silence all SFX channels 
@@ -304,9 +313,9 @@ setChannelPatternAddresses:
 
 sabre_soundUpdate:
 	LDA regionTickRate_track
-	BNE +
+	BNE @validTickRate
 		RTS		;; In case update called before sabre_initAPU finishes
-	+
+@validTickRate:
 	TXA 
 	PHA 
 	TYA 
@@ -347,10 +356,17 @@ trackProcessChannelRow:
 	CMP trackSpeed
 SFXspeedReturnCheck:
 	;; Check if there's something to process this row 
+.ifdef UNOFFICIAL_OPS
+	LDA #0
+	BCC sabre_ProcessChannelEnvelopes_DMCcheck
+	;; Check if there's something to process this row 
+	DCP channelNoteCountdown,y
+.else
 	LDA channelNoteCountdown,y 
 	BCC sabre_ProcessChannelEnvelopes_DMCcheck
 	SBC #1
 	STA channelNoteCountdown,y
+.endif
 	BNE sabre_ProcessChannelEnvelopes_DMCcheck
 	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -366,9 +382,9 @@ getNextPatternByte:
 		BVC setNoteDurationToCountdown
 		;; Increment pattern offset address 
 		INC channel_patternOffsetAddr,x 
-		BNE +
+		BNE @endInc16
 			INC channel_patternOffsetAddr+1,x
-		+
+	@endInc16:
 		LDA (channel_patternOffsetAddr,x)	;; Will never have 2 INST changes in a row
 skipInstrumentChange:
 	;; Check if current byte is a control instruction
@@ -377,25 +393,25 @@ skipInstrumentChange:
 		STY sabreTemp 
 		;; Increment pattern offset address 
 		INC channel_patternOffsetAddr,x 
-		BNE +
+		BNE @endInc16
 			INC channel_patternOffsetAddr+1,x
-		+
+	@endInc16:
 		TAY 
 		SBC #NOTE_LENGTHS_START
-		BCC +
+		BCC @controlOpcode
 			TAY 
 			LDA sabre_noteLengthTable,y
 			LDY sabreTemp
 			STA channelNoteDuration,y
 			BCS getNextPatternByte
-		+
+	@controlOpcode:
 		;; Execute corresponding control opcode 
 		LDA sabre_noteControlOpcodeTable_lo-NOTE_CEILING,y
 		STA pointer16 
 		LDA sabre_noteControlOpcodeTable_hi-NOTE_CEILING,y 
 		STA pointer16+1 
 		JMP (pointer16) 
-		;; Will jump to getNextPatternByte - expects redundant note length byte 
+		;; Will eventually return to getNextPatternByte - expects redundant note length byte 
 skipControlOpcode:
 	STA channelBaseNote,y 
 setNoteDurationToCountdown:
@@ -407,20 +423,20 @@ setNoteDurationToCountdown:
 		INC channel_patternOffsetAddr+1,x
 endProcessChannelRow:
 	CPY #CHANNEL_TRACK_DMC
-	BCC +
+	BCC @notDMC
 		;; Play new sample
 		JMP sabre_DMChandler
-	+
+@notDMC:
 	LDA #$FF 
 	STA channelLastArpNote,y
 	LDA #0
 	STA channelVolEnvelopeStep,y
 	STA channelArpEnvelopeStep,y
 	CPY #CHANNEL_TRACK_NOISE
-	BCC +
+	BCC @notNoise
 		STA noiseDutyEnvelopeStep-6,y
 		BCS sabre_ProcessChannelEnvelopes
-	+
+@notNoise:
 	STA channelPitchEnvelopeStep,y
 	CPY #CHANNEL_TRACK_TRIANGLE 
 	BCS sabre_ProcessChannelEnvelopes
@@ -460,7 +476,7 @@ sabre_ProcessChannelEnvelopes:
 	INC channelVolEnvelopeStep,x 
 	LDA (envelopeAddr),y 
 	CMP #ENV_LOOP
-	BNE +skipLoopPoint
+	BNE @skipLoopPoint
 		;; Read next byte to get step to jump back to 
 		INY 
 		LDA (envelopeAddr),y 
@@ -469,9 +485,10 @@ sabre_ProcessChannelEnvelopes:
 		STA channelVolEnvelopeStep,x 
 		;; Read next data byte 
 		LDA (envelopeAddr),y 
-+skipLoopPoint:
+@skipLoopPoint:
 	AND channelMuteStatus,x
 	STA apuShadow4000X,x
+endVolumeEnvelope:
 	
 	;;;; Update arpeggio enveleope 
 	LDY #2
@@ -485,7 +502,7 @@ sabre_ProcessChannelEnvelopes:
 	INC channelArpEnvelopeStep,x 
 	LDA (envelopeAddr),y 
 	CMP #ENV_LOOP 
-	BNE +skipLoopPoint 
+	BNE @skipLoopPoint
 		;; Read next byte to get step to jump back to 
 		INY
 		LDA (envelopeAddr),y 
@@ -494,16 +511,16 @@ sabre_ProcessChannelEnvelopes:
 		STA channelArpEnvelopeStep,x 
 		;; Read next data byte 
 		LDA (envelopeAddr),y
-+skipLoopPoint:
+@skipLoopPoint:
 	;; Add relative offset to base note 
 	CLC 
 	ADC channelBaseNote,x
 	CPX #CHANNEL_TRACK_NOISE
-	BCC +notNoiseChannel
+	BCC @notNoiseChannel
 		CMP channelLastArpNote,x 
-		BNE +
+		BNE @updateNewPeriod
 			JMP endDutyEnvelope
-		+
+	@updateNewPeriod:
 		;; Update new note period
 		STA channelLastArpNote,x
 		;; Use period index directly for noise channel
@@ -511,7 +528,7 @@ sabre_ProcessChannelEnvelopes:
 		EOR #$0F
 		STA apuShadow4002X,x 
 		JMP noiseDutyEnvelope
-+notNoiseChannel:
+@notNoiseChannel:
 	CMP channelLastArpNote,x 
 	BEQ endArpEnvelope
 	;; Update new note period
@@ -519,24 +536,24 @@ sabre_ProcessChannelEnvelopes:
 	TAY 
 	LDA soundRegion
 	CMP #REGION_PAL
-	BEQ +PAL
+	BEQ @PAL
 		;; Use NTSC period table
 		LDA NTSC_PTNperiodTable_lo,y 
 		STA apuShadow4002X,x
 		CPY #36 
-		BCS +zeroHiByte
+		BCS @zeroHiByte
 		LDA NTSC_PTNperiodTable_hi,y 
-		BCC +store4003X
-	+PAL:
+		BCC @store4003X
+	@PAL:
 		;; Use PAL period table
 		LDA PAL_PTNperiodTable_lo,y 
 		STA apuShadow4002X,x 
 		LDA PAL_PTNperiodTable_hi,y 
 		CPY #36
-		BCC +store4003X
-	+zeroHiByte:
+		BCC @store4003X
+	@zeroHiByte:
 		LDA #0
-	+store4003X:
+	@store4003X:
 		STA apuShadow4003X,x
 endArpEnvelope:
 
@@ -552,7 +569,7 @@ endArpEnvelope:
 	INC channelPitchEnvelopeStep,x
 	LDA (envelopeAddr),y 
 	CMP #ENV_LOOP 
-	BNE +skipLoopPoint 
+	BNE @skipLoopPoint
 		;; Read next byte to get step to jump back to 
 		INY
 		LDA (envelopeAddr),y 
@@ -560,10 +577,10 @@ endArpEnvelope:
 		ADC #0
 		STA channelPitchEnvelopeStep,x 
 		;; Read next data byte 
-+skipLoopPoint:
+@skipLoopPoint:
 	LDA (envelopeAddr),y
 	CLC 
-	BPL +isAddition
+	BPL @isAddition
 		;; Is subtraction 
 		ADC apuShadow4002X,x 
 		STA apuShadow4002X,x 
@@ -572,7 +589,7 @@ endArpEnvelope:
 			BEQ endPitchEnvelope
 			DEC apuShadow4003X,x
 			JMP endPitchEnvelope
-	+isAddition:
+	@isAddition:
 		;; Is addition 
 		ADC apuShadow4002X,x
 		STA apuShadow4002X,x
@@ -597,7 +614,7 @@ endPitchEnvelope:
 		INC channelDutyEnvelopeStep,x 
 		LDA (envelopeAddr),y 
 		CMP #ENV_LOOP 
-		BNE +skipLoopPoint 
+		BNE @skipLoopPoint 
 			;; Read next byte to get step to jump back to 
 			INY
 			LDA (envelopeAddr),y 
@@ -606,7 +623,7 @@ endPitchEnvelope:
 			STA channelDutyEnvelopeStep,x 
 			;; Read next data byte 
 			LDA (envelopeAddr),y
-	+skipLoopPoint: 
+	@skipLoopPoint: 
 		ASL 
 		ORA apuShadow4000X,x 
 		STA apuShadow4000X,x
@@ -625,7 +642,7 @@ noiseDutyEnvelope:
 	INC noiseDutyEnvelopeStep-6,x 
 	LDA (envelopeAddr),y 
 	CMP #ENV_LOOP 
-	BNE +skipLoopPoint 
+	BNE @skipLoopPoint 
 		;; Read next byte to get step to jump back to 
 		INY
 		LDA (envelopeAddr),y 
@@ -634,15 +651,19 @@ noiseDutyEnvelope:
 		STA noiseDutyEnvelopeStep-6,x 
 		;; Read next data byte 
 		LDA (envelopeAddr),y
-+skipLoopPoint: 
+@skipLoopPoint: 
 	ASL 
 	ASL
 	ORA apuShadow4002X,x 
 	STA apuShadow4002X,x
 
-endDutyEnvelope:	
+endDutyEnvelope:
+.ifdef UNOFFICIAL_OPS 
+	LAX sabreTemp 
+.else
 	LDX sabreTemp 
 	TXA
+.endif
 	LSR 
 	TAY 
 	JMP iterateNextSoundChannel
@@ -671,55 +692,56 @@ sabre_DMChandler:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	
 sabre_updateAPUregisters:
-	;; Pulse 1 registers
+pulse1_regUpload:
 	LDA apuSFX4000
-	BEQ +noSFX
+	BEQ @noSFX
 		;; Use SFX
 		ORA #%00110000
 		STA $4000
 		LDA apuSFX4002
 		STA $4002
 		LDA apuSFX4003
-		JMP +checkHiTimer
-+noSFX:
+		JMP @checkHiTimer
+@noSFX:
 	LDA apuShadow4000
 	ORA #%00110000
 	STA $4000
 	LDA apuShadow4002
 	STA $4002
 	LDA apuShadow4003
-+checkHiTimer:
+@checkHiTimer:
 	CMP apuLast4003
-	BEQ +
+	BEQ pulse2_regUpload
 		STA $4003
 		STA apuLast4003
-	+
-	;; Pulse 2 registers 
+
+pulse2_regUpload:
 	LDA apuSFX4004
-	BEQ +noSFX
+	BEQ @noSFX
 		;; Use SFX
 		ORA #%00110000
 		STA $4004
 		LDA apuSFX4006
 		STA $4006
 		LDA apuSFX4007
-		JMP +checkHiTimer
-+noSFX:
+		JMP @checkHiTimer
+@noSFX:
 	LDA apuShadow4004
 	ORA #%00110000
 	STA $4004
 	LDA apuShadow4006
 	STA $4006
 	LDA apuShadow4007
-+checkHiTimer:
+@checkHiTimer:
 	CMP apuLast4007
-	BEQ +
+	BEQ triangle_regUpload
 		STA $4007
 		STA apuLast4007
-	+
+
+triangle_regUpload:
 	;; Triangle registers 
 	LDA apuSFX4008
-	BEQ +noSFX
+	BEQ @noSFX
 		;; Use SFX
 		AND #%00001111
 		ORA #%10000000
@@ -727,8 +749,8 @@ sabre_updateAPUregisters:
 		LDA apuSFX400A
 		STA $400A
 		LDA apuSFX400B
-		JMP +
-+noSFX:
+		JMP @write400B
+@noSFX:
 	LDA apuShadow4008
 	AND #%00001111
 	ORA #%10000000
@@ -736,66 +758,65 @@ sabre_updateAPUregisters:
 	LDA apuShadow400A
 	STA $400A 
 	LDA apuShadow400B
-	+
+@write400B:
 	STA $400B 
-	;; Noise registers 
+	
+noise_regUpload:
 	LDA apuSFX400C
-	BEQ +noSFX
+	BEQ @noSFX4
 		;; Use SFX
 		ORA #%00110000
 		STA $400C 
 		LDA apuSFX400E
-		JMP +
-+noSFX:
+		JMP @write400E
+@noSFX4:
 	LDA apuShadow400C 
 	ORA #%00110000
 	STA $400C 
 	LDA apuShadow400E
-	+
+@write400E:
 	STA $400E 
 
 
 
-	;; Update track speed 
+updateTrackSpeed:
 	LDA trackSpeedElapsed
 	SEC
 	SBC trackSpeed 
-	BCC +
+	BCC updateSFXspeed
 		STA trackSpeedElapsed
-	+
-	;; Update SFX speed 
+updateSFXspeed:
 	LDA SFXspeedElapsed
 	SEC 
 	SBC SFXspeed 
-	BCC +
+	BCC updateTrackTempo
 		STA SFXspeedElapsed
-	+
-	;; Update track tempo
+updateTrackTempo:
 	LDA trackTempoElapsed
 	CLC
 	ADC trackTempo 
-	BCS incTrackSpeedElapsed
+	BCS @incTrackSpeedElapsed
 	CMP regionTickRate_track
-	BCC +
-	incTrackSpeedElapsed:
-		SBC regionTickRate_track
-		INC trackSpeedElapsed
-		CMP regionTickRate_track
-		BCS incTrackSpeedElapsed
-	+
+	BCC @storeTrackSpeedElapsed
+@incTrackSpeedElapsed:
+	SBC regionTickRate_track
+	INC trackSpeedElapsed
+	CMP regionTickRate_track
+	BCS @incTrackSpeedElapsed
+@storeTrackSpeedElapsed:
 	STA trackTempoElapsed
-	;; Update SFX tempo 
+updateSFXtempo:
 	LDA SFXtempoElapsed 
 	ADC SFXtempo 
-	BCS incSFXspeedElapsed
+	BCS @incSFXspeedElapsed
 	CMP regionTickRate_SFX 
-	BCC +
-	incSFXspeedElapsed:
-		SBC regionTickRate_SFX
-		INC SFXspeedElapsed
-		CMP regionTickRate_SFX
-		BCS incSFXspeedElapsed
-	+
+	BCC @storeSFXtempoElapsed
+@incSFXspeedElapsed:
+	SBC regionTickRate_SFX
+	INC SFXspeedElapsed
+	CMP regionTickRate_SFX
+	BCS @incSFXspeedElapsed
+@storeSFXtempoElapsed:
 	STA SFXtempoElapsed
 	PLA 
 	TAY 
@@ -818,11 +839,11 @@ sabre_stopTrack:
 	STA channel_trackAddr+17
 	;; Clear track envelope steps
 	LDY #26
-	-
+@loop_clearEnvelopes:
 	STA channelVolEnvelopeStep,y 
 	DEY 
 	DEY 
-	BPL -
+	BPL @loop_clearEnvelopes
 	;; Clear track volume registers
 	STA apuShadow4000
 	STA apuShadow4004
@@ -842,7 +863,7 @@ sabre_pauseTrack:
 	LDA sabrePauseStatus
 	EOR #$FF 
 	STA sabrePauseStatus
-	BNE +
+	BNE @return
 		;; Paused - clear volume registers
 		STA apuShadow4000
 		STA apuShadow4004
@@ -851,22 +872,22 @@ sabre_pauseTrack:
 		;; Stop DMC 
 		LDA #%00001111
 		STA $4015
-	+
+@return:
 	RTS
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 sabre_noteControlOpcodeTable_lo:
-	.db <op_D00, <op_BXX, <op_C00, <op_NLC, <op_FXX, <op_ZXX, <op_NUL, <op_END_SFX
+	.byte <op_D00, <op_BXX, <op_C00, <op_NLC, <op_FXX, <op_ZXX, <op_NUL, <op_END_SFX
 sabre_noteControlOpcodeTable_hi:
-	.db >op_D00, >op_BXX, >op_C00, >op_NLC, >op_FXX, >op_ZXX, >op_NUL, >op_END_SFX
+	.byte >op_D00, >op_BXX, >op_C00, >op_NLC, >op_FXX, >op_ZXX, >op_NUL, >op_END_SFX
 
 sabre_noteLengthTable:
-	.db 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
-	.db 18,20,22,24,26,28,30,32
-	.db 36,40,48
-	.db 64,98,128
-	.db 0
+	.byte 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+	.byte 18,20,22,24,26,28,30,32
+	.byte 36,40,48
+	.byte 64,98,128
+	.byte 0
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -906,9 +927,9 @@ op_NLC:
 	LDY sabreTemp 
 	STA channelNoteDuration,y 
 	INC channel_patternOffsetAddr,x 
-	BNE +
+	BNE @endInc16
 		INC channel_patternOffsetAddr+1,x
-	+
+@endInc16:
 	JMP getNextPatternByte
 
 op_FXX:
@@ -917,9 +938,9 @@ op_FXX:
 	STA trackSpeed
 	STA trackSpeedElapsed
 	INC channel_patternOffsetAddr,x 
-	BNE +
+	BNE @endInc16
 		INC channel_patternOffsetAddr+1,x
-	+
+@endInc16:
 	LDY sabreTemp 
 	JMP getNextPatternByte
 
@@ -928,9 +949,9 @@ op_ZXX:
 	LDA (channel_patternOffsetAddr,x)
 	STA $4011
 	INC channel_patternOffsetAddr,x 
-	BNE +
+	BNE @endInc16
 		INC channel_patternOffsetAddr+1,x
-	+
+@endInc16:
 	LDY sabreTemp 
 	JMP getNextPatternByte
 

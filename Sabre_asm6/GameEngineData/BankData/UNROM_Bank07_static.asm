@@ -15,11 +15,7 @@
 	.include "GameEngineData\c000_subroutines.asm"
 ;;=========================
 ;; Sabre Driver
-.ifdef UNOFFICIAL_OPS 
-	.include "GameEngineData\sabre_uo.asm"
-.else
 	.include "GameEngineData\sabre.asm"
-.endif
 ;;=========================
 ;; Sabre Static + DPCM Data
     .include "sabre_demoTracks_static.asm"
