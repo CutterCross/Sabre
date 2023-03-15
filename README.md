@@ -3,7 +3,7 @@
  
  Sabre is a lightweight sound driver for NES homebrew projects, compatible with [FamiTracker](https://github.com/Dn-Programming-Core-Management/Dn-FamiTracker "Dn-FamiTracker GitHub Page") TXT export data. 
  
- Written for [ASM6 / ASM6F](https://github.com/freem/asm6f "ASM6F GitHub Page") and [CA65] (https://github.com/cc65/cc65 "CC65 GitHub Page")
+ Written for [ASM6 / ASM6F](https://github.com/freem/asm6f "ASM6F GitHub Page") and [CA65](https://github.com/cc65/cc65 "CC65 GitHub Page") assemblers.
  
 ## Features:
  - Note range: A0 - B7
@@ -71,7 +71,7 @@
  
  (Optional) Replace `[title]` to use a different prefix than `{filename}` for your output files.
 
- The exported assembly should be valid for either asm6 or ca65.
+ The exported assembly should be valid for either ASM6 or CA65.
  
  If no files are created, there was likely a runtime error. Running via the command line can help list any errors that occur.
  
@@ -101,7 +101,7 @@
 
 ## Using Sabre in Your Project:
 
- [ASM6 Include Guide](Sabre_asm6/README_ASM6.md)
+ [ASM6 Include Guide](Sabre_asm6/README_ASM6.md) \n
  [CA65 Include Guide](Sabre_ca65/README_CA65.md)
 
 ### Initialization:
