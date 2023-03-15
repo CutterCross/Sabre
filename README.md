@@ -101,8 +101,8 @@
 
 ## Using Sabre in Your Project:
 
- [ASM6 Include Guide](Sabre_asm6/README_ASM6.md) \n
- [CA65 Include Guide](Sabre_ca65/README_CA65.md)
+ - [ASM6 Include Guide](Sabre_asm6/README_ASM6.md) 
+ - [CA65 Include Guide](Sabre_ca65/README_CA65.md)
 
 ### Initialization:
  In your program's initialization, store your desired region value into `soundRegion`, and then call `sabre_initAPU`.
