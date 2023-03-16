@@ -1,6 +1,7 @@
-SABRE Features List.txt
 Sabre_asm6/SabreUNROM_source.txt
-Sabre_ft_txt_conv/
+Sabre_asm6/test_default.asm
+Sabre_asm6/test_dpcm.asm
+Sabre_asm6/test_static.asm
 Sabre_cc65/
 *.mlb
 *.lua

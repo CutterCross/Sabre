@@ -458,5 +458,5 @@ updateByteDecimalNumberNAM:
 	STA $2007
 	RTS
 
-.include "GameEngineData\handleInputs.asm"
-.include "GameEngineData\handleButtonScripts.asm"
+.include "Replayer\handleInputs.asm"
+.include "Replayer\handleButtonScripts.asm"
