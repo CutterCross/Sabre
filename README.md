@@ -69,7 +69,7 @@
  ```
  Replace `{filename}` with the name of your exported FT txt file 
  
- (Optional) Replace `[title]` to use a different prefix than `{filename}` for your output files.
+ (Optional) Replace `{title}` to use a different prefix than `{filename}` for your output files.
 
  The exported assembly should be valid for either ASM6 or CA65.
  

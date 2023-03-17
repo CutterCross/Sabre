@@ -3,6 +3,7 @@ Sabre_asm6/test_default.asm
 Sabre_asm6/test_dpcm.asm
 Sabre_asm6/test_static.asm
 Sabre_cc65/
+Sabre_ca65/Replayer
 *.mlb
 *.lua
 *.exe
