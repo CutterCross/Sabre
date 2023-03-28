@@ -169,7 +169,7 @@ def compile_sabre_pattern(rows:"list[Row_data]", channel:str, sfx:bool = False) 
 		
 		if include_length and not include_inst:
 			include_note = True
-		if not include_length and not include_note and row.note != None:
+		if not include_length and not include_note and not include_inst and row.note != None:
 			include_note = True
 
 		if row.effect != None and row.effect[0] in FX_PATTERN_ENDING:
