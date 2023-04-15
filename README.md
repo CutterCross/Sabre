@@ -88,6 +88,7 @@
 ### Build Flags in sabre\_includes.asm:
  - `UNOFFICIAL_OPS`: Enables use of unofficial CPU opcodes in the Sabre driver for slightly better performance. (AXS {#imm}, DCP {abs,y}, and LAX {zp}) May break compatibility with certain emulators and famiclones.
  - `BANKSWITCH_TRACKS`: Used by the Sabre replayer and driver to bankswitch each track's corresponding PRG bank.
+ - `SFX_FLUSH`: Enable to completely flush old SFX channels when new SFX plays. Disable to keep untouched old SFX channels playing.
  - `ADJ_REGION_TEMPO_TRACK`: Enables tempo adjustment for music between NTSC, PAL, and Dendy regions.
  - `ADJ_REGION_TEMPO_SFX`: Enables tempo adjustment for SFX between NTSC, PAL, and Dendy regions. 
 

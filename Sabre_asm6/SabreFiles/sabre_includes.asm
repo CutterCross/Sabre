@@ -5,6 +5,7 @@
 ;BANKSWITCH_TRACKS = 1
 
 ;;;; Driver build flags - comment out to disable
+;SFX_FLUSH = 1
 ADJ_REGION_TEMPO_TRACK = 1
 ADJ_REGION_TEMPO_SFX = 1
 

@@ -209,6 +209,13 @@ sabre_playSFX:
 	STA SFXtempo
 	LDA #0
 	STA SFXtempoElapsed 
+
+.ifdef SFX_FLUSH
+	;;;; New SFX will completely flush old SFX channels
+	STA apuSFX4000
+	STA apuSFX4004
+	STA apuSFX4008
+	STA apuSFX400C
 	LDY #7
 @loop_clearInstEnvelopes:
 	;; Zero out instruments and envelope steps [SFX]
@@ -237,6 +244,43 @@ setChannelSFXaddresses:
 	LDA (pointer16),y 
 	STA channel_trackAddr+1,x 	;; hi byte
 	STA channel_patternOffsetAddr+1,x 
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+.else 
+	;;;; New SFX will keep untouched SFX channels playing
+	INY
+	LDX #2
+setChannelSFXaddresses:
+	LDA (pointer16),y 
+	STA sabreTemp
+	INY 
+	LDA (pointer16),y 
+	BEQ @nextChannel
+		;; Valid SFX address - Write new channel track + pattern addresses
+		STA channel_trackAddr+1,x 	;; hi byte
+		STA channel_patternOffsetAddr+1,x 
+		LDA sabreTemp 
+		STA channel_trackAddr,x		;; lo byte
+		STA channel_patternOffsetAddr,x
+		;; Init channel instrument + envelopes [SFX]
+		LDA #1
+		STA channelNoteCountdown-2,y
+		LDA #0
+		STA channelInstrument-2,y
+		STA channelVolEnvelopeStep-2,y
+		STA channelArpEnvelopeStep-2,y
+		;; Special conditionals for Pitch + Duty envelopes
+		CPY #CHANNEL_SFX_NOISE+2
+		BNE @notNoiseChannel
+			STA noiseDutyEnvelopeStep+1
+			BEQ endPlaySFX
+	@notNoiseChannel:
+		STA channelPitchEnvelopeStep-2,y 
+		CPY #CHANNEL_SFX_PULSE2+2 
+		BCS @nextChannel
+			STA channelDutyEnvelopeStep-2,y
+@nextChannel:
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+.endif 
 	INY
 .ifdef UNOFFICIAL_OPS 
 	TXA 
@@ -249,12 +293,6 @@ setChannelSFXaddresses:
 .endif
 	CPY #9
 	BCC setChannelSFXaddresses
-	;; Silence all SFX channels 
-	LDA #0
-	STA apuSFX4000
-	STA apuSFX4004
-	STA apuSFX4008
-	STA apuSFX400C
 endPlaySFX:
 	PLA 
 	TAY 
