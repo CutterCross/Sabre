@@ -1,11 +1,9 @@
 ;;;; SABRE constants ;;;;
 
-;;;; Replayer build flags - comment out to disable
+;;;; Driver / Replayer build flags - comment out to disable
 ;UNOFFICIAL_OPS = 1
 ;BANKSWITCH_TRACKS = 1
-
-;;;; Driver build flags - comment out to disable
-;SFX_FLUSH = 1
+SFX_FLUSH = 1
 ADJ_REGION_TEMPO_TRACK = 1
 ADJ_REGION_TEMPO_SFX = 1
 
