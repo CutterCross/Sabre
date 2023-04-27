@@ -556,11 +556,10 @@ endVolumeEnvelope:
 	CPX #CHANNEL_TRACK_NOISE
 	BCC @notNoiseChannel
 		CMP channelLastArpNote,x 
-		BNE @updateNewPeriod
-			JMP endDutyEnvelope
-	@updateNewPeriod:
-		;; Update new note period
-		STA channelLastArpNote,x
+		BEQ @skipNewPeriodUpdate
+			;; Update new note period
+			STA channelLastArpNote,x
+	@skipNewPeriodUpdate:
 		;; Use period index directly for noise channel
 		AND #$0F
 		EOR #$0F
