@@ -7,7 +7,7 @@ import math
 import sys
 import os.path
 
-NOTE_COUNT = 86
+NOTE_COUNT = 87
 
 NOTE_LENGTHS = [
 	1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18,
@@ -312,7 +312,7 @@ class Music:
 
 	def map_sample(self, note:int, sample:int, pitch:int):
 		if note < 0 or note >= NOTE_COUNT:
-			# don't map samples outside 0-85
+			# don't map samples outside 0-86
 			return
 		if sample >= len(self.samples):
 			raise RuntimeError('Invalid sample index for DPCM mapping')
