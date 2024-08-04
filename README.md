@@ -24,9 +24,10 @@
  - 128 patterns per track 
  - 1 pattern per SFX
  - NTSC, PAL, and Dendy tempo & period adjustments
+ - Linear counter trill for Triangle channel
  
 ## Requirements:
- - 1743 bytes ROM
+ - 1749 bytes ROM
  - 42 bytes ZP RAM
  - 121 bytes non-ZP RAM 
  
@@ -41,6 +42,7 @@
  - Do not expand effect columns to more than 1 effect per channel
  - BXX, C00, and D00 should only be placed in the first active channel (left -> right)
  - FXX and ZXX will be clobbered by BXX, C00, or D00 on the same row
+ - Enable Triangle linear counter trill effect by using volume values 1 - 3 in volume envelope.
  
 ## Sabre Replayer Controls:
  - D-Pad L/R: Change track index

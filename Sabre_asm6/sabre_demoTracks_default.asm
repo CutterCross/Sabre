@@ -513,3 +513,20 @@ _default_TriangleEchoTest_DMC_pattern1:
 	.byte A0,AS0,A0,AS0,A0,AS0,A0,AS0,A0,AS0
 	.byte A0,AS0,A0,AS0,A0,D00
 
+_default_TriangleGrowlTest_header:
+	.byte 6
+	.byte 150
+	.byte 1
+	.word NULL_pulse1
+	.word NULL_pulse2
+	.word _default_TriangleGrowlTest_triangle
+	.word NULL_noise
+	.word NULL_DMC
+
+_default_TriangleGrowlTest_triangle:
+	.word _default_TriangleGrowlTest_triangle_pattern0
+_default_TriangleGrowlTest_triangle_pattern0:
+	.byte NL4,INST|CONT|16,AS3,INST|15,INST|14,INST|13,INST|CONT|16,CS4,INST|15,INST|14
+	.byte INST|13,INST|CONT|16,GS4,INST|15,INST|14,INST|13,INST|CONT|16,AS5,INST|15,INST|14
+	.byte INST|13,D00
+

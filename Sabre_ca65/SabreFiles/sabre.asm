@@ -729,6 +729,11 @@ sabre_DMChandler:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	
 sabre_updateAPUregisters:
+	;; Forcibly clock APU frame counter for consistant triangle growl at vol 1-3
+	LDA #%11000000
+	STA $4017
+	LDA #%01000000
+	STA $4017
 pulse1_regUpload:
 	LDA apuSFX4000
 	BEQ @noSFX
@@ -781,7 +786,6 @@ triangle_regUpload:
 	BEQ @noSFX
 		;; Use SFX
 		AND #%00001111
-		ORA #%10000000
 		STA $4008
 		LDA apuSFX400A
 		STA $400A
@@ -790,7 +794,6 @@ triangle_regUpload:
 @noSFX:
 	LDA apuShadow4008
 	AND #%00001111
-	ORA #%10000000
 	STA $4008
 	LDA apuShadow400A
 	STA $400A 

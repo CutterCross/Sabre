@@ -1,5 +1,5 @@
 sabre_maxTracks:
-	.byte 3
+	.byte 4
 sabre_maxSFX:
 	.byte 4
 
@@ -7,12 +7,14 @@ trackHeaderTable_lo:
 	.byte <_default_MoodSwings_header
 	.byte <_default_Intermisison_header
 	.byte <_default_TriangleEchoTest_header
+	.byte <_default_TriangleGrowlTest_header
 trackHeaderTable_hi:
 	.byte >_default_MoodSwings_header
 	.byte >_default_Intermisison_header
 	.byte >_default_TriangleEchoTest_header
+	.byte >_default_TriangleGrowlTest_header
 trackTable_PRGbank:
-	.byte $00,$00,$00
+	.byte $00,$00,$00,$00
 
 sfxHeaderTable_lo:
 	.byte <_sfx_error_header
@@ -26,9 +28,10 @@ sfxHeaderTable_hi:
 	.byte >_sfx_downSlide_header
 
 ;;;; Track index constants
-	_default_MoodSwings       = 0
-	_default_Intermisison     = 1
-	_default_TriangleEchoTest = 2
+	_default_MoodSwings        = 0
+	_default_Intermisison      = 1
+	_default_TriangleEchoTest  = 2
+	_default_TriangleGrowlTest = 3
 ;;;; SFX index constants
 	_sfx_error      = 0
 	_sfx_zapperShot = 1
@@ -352,17 +355,17 @@ dpcm_noteToSampleTable:
 	.byte $03,$04,$02,$ff,$02,$ff,$02,$02,$ff,$02,$ff,$02,$ff,$02,$01,$ff,$01,$ff,$01,$01,$ff,$01,$ff,$01
 	.byte $ff,$01,$00,$ff,$00,$ff,$00,$00,$ff,$00,$ff,$00,$ff,$00,$00,$ff,$00,$ff,$ff,$00,$ff,$00,$ff,$00
 	.byte $ff,$ff,$00,$ff,$ff,$ff,$ff,$00,$ff,$00,$ff,$ff,$ff,$ff,$00,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff
-	.byte $ff,$ff,$ff,$02,$01,$00,$06,$06,$06,$06,$06,$06,$06,$05
+	.byte $ff,$ff,$ff,$02,$01,$00,$06,$06,$06,$06,$06,$06,$06,$05,$05
 dpcm_noteToSampleRateAndFlags:
 	.byte $00,$00,$40,$ff,$41,$ff,$42,$43,$ff,$44,$ff,$45,$ff,$46,$40,$ff,$41,$ff,$42,$43,$ff,$44,$ff,$45
 	.byte $ff,$46,$40,$ff,$41,$ff,$42,$43,$ff,$44,$ff,$45,$ff,$46,$47,$ff,$48,$ff,$ff,$49,$ff,$4a,$ff,$4b
 	.byte $ff,$ff,$4c,$ff,$ff,$ff,$ff,$4d,$ff,$4e,$ff,$ff,$ff,$ff,$4f,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff
-	.byte $ff,$ff,$ff,$0f,$0f,$0f,$0f,$0e,$0d,$0c,$0b,$0a,$09,$0f
+	.byte $ff,$ff,$ff,$0f,$0f,$0f,$0f,$0e,$0d,$0c,$0b,$0a,$09,$0f,$0e
 dpcm_noteToSampleLength:
 	.byte $01,$01,$01,$ff,$01,$ff,$01,$01,$ff,$01,$ff,$01,$ff,$01,$01,$ff,$01,$ff,$01,$01,$ff,$01,$ff,$01
 	.byte $ff,$01,$01,$ff,$01,$ff,$01,$01,$ff,$01,$ff,$01,$ff,$01,$01,$ff,$01,$ff,$ff,$01,$ff,$01,$ff,$01
 	.byte $ff,$ff,$01,$ff,$ff,$ff,$ff,$01,$ff,$01,$ff,$ff,$ff,$ff,$01,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff
-	.byte $ff,$ff,$ff,$01,$01,$01,$19,$19,$19,$19,$19,$19,$19,$19
+	.byte $ff,$ff,$ff,$01,$01,$01,$19,$19,$19,$19,$19,$19,$19,$19,$19
 
 _sfx_error_header:
 	.byte 5
