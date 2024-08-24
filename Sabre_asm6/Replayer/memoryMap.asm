@@ -29,12 +29,12 @@ SHADOW_OAM = $0200
 		trackRestartStatus	.dsb 1
 		
 		;; Sabre ZP RAM vars
-		.include "SabreFiles\sabre_ZP_RAM.asm"
+		.include "SabreFiles/sabre_ZP_RAM.asm"
 	.ende
 	
 ;;;; OVERFLOW RAM VARIABLES 
 	.enum SOUND_RAM
 		;; Sabre misc RAM vars
-		.include "SabreFiles\sabre_Misc_RAM.asm"
+		.include "SabreFiles/sabre_Misc_RAM.asm"
 	.ende 
 	

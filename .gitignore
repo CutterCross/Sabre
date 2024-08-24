@@ -1,9 +1,12 @@
 Sabre_asm6/SabreUNROM_source.txt
+Sabre_asm6/asm6f
+Sabre_asm6/SabreUNROM.nes
 Sabre_asm6/test_default.asm
 Sabre_asm6/test_dpcm.asm
 Sabre_asm6/test_static.asm
 Sabre_cc65/
 Sabre_ca65/Replayer
+Sabre_ca65/SabreUNROM.nes
 *.mlb
 *.lua
 *.exe
