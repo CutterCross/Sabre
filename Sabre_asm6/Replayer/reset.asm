@@ -23,7 +23,7 @@ clrMemLoop:
     STA $0200,x     ;; To place sprites off screen
     STA $0400,x     ;; and object RAM as well
     LDA #$00
-    STA $0000,x
+    STA $00,x
     STA $0100,x 
     STA $0300,x
     STA $0500,x
