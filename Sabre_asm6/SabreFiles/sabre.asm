@@ -737,93 +737,67 @@ sabre_updateAPUregisters:
 	STA $4017
 .endif
 pulse1_regUpload:
+	LDY #1
 	LDA apuSFX4000
-	BEQ @noSFX
-		;; Use SFX
-		ORA #%00110000
-		STA $4000
-		LDA apuSFX4002
-		STA $4002
-		LDA apuSFX4003
-		JMP @checkHiTimer
-@noSFX:
-	LDA apuShadow4000
+	BNE @useSFX
+	DEY		;; No SFX
+	LDA apuShadow4000,y 
+@useSFX:
 	ORA #%00110000
 	STA $4000
-	LDA apuShadow4002
+	LDA apuShadow4002,y 
 	STA $4002
-	LDA apuShadow4003
-@checkHiTimer:
+	LDA apuShadow4003,y 
 	CMP apuLast4003
-	BEQ pulse2_regUpload
-		STA $4003
-		STA apuLast4003
-
+	BEQ pulse2_regUpload 
+	STA $4003
+	STA apuLast4003 
+	
 pulse2_regUpload:
-	LDA apuSFX4004
-	BEQ @noSFX
-		;; Use SFX
-		ORA #%00110000
-		STA $4004
-		LDA apuSFX4006
-		STA $4006
-		LDA apuSFX4007
-		JMP @checkHiTimer
-@noSFX:
-	LDA apuShadow4004
+	LDY #1
+	LDA apuSFX4004 
+	BNE @useSFX 
+	DEY 	;; No SFX 
+	LDA apuShadow4004,y
+@useSFX:
 	ORA #%00110000
-	STA $4004
-	LDA apuShadow4006
-	STA $4006
-	LDA apuShadow4007
-@checkHiTimer:
-	CMP apuLast4007
-	BEQ triangle_regUpload
-		STA $4007
-		STA apuLast4007
-
+	STA $4004 
+	LDA apuShadow4006,y 
+	STA $4006 
+	LDA apuShadow4007,y 
+	CMP apuLast4007 
+	BEQ triangle_regUpload:
+	STA $4007 
+	STA apuLast4007 
+	
 triangle_regUpload:
-	;; Triangle registers 
-	LDA apuSFX4008
-	BEQ @noSFX
-		;; Use SFX
-		AND #%00001111
-	.ifndef LINEAR_COUNTER_TRILL
-		ORA #%10000000
-	.endif
-		STA $4008
-		LDA apuSFX400A
-		STA $400A
-		LDA apuSFX400B
-		JMP @write400B
-@noSFX:
-	LDA apuShadow4008
+	LDY #1
+	LDA apuSFX4008 
+	BNE @useSFX 
+	DEY 	;; No SFX 
+	LDA apuShadow4008,y 
+@useSFX:
 	AND #%00001111
 .ifndef LINEAR_COUNTER_TRILL
 	ORA #%10000000
-.endif
-	STA $4008
-	LDA apuShadow400A
+.endif 
+	STA $4008 
+	LDA apuShadow400A,y 
 	STA $400A 
-	LDA apuShadow400B
-@write400B:
+	LDA apuShadow400B,y 
 	STA $400B 
 	
 noise_regUpload:
+	LDY #1
 	LDA apuSFX400C
-	BEQ @noSFX4
-		;; Use SFX
-		ORA #%00110000
-		STA $400C 
-		LDA apuSFX400E
-		JMP @write400E
-@noSFX4:
-	LDA apuShadow400C 
+	BNE @useSFX 
+	DEY 	;; No SFX
+	LDA apuShadow400C,y
+@useSFX:
 	ORA #%00110000
 	STA $400C 
-	LDA apuShadow400E
-@write400E:
-	STA $400E 
+	LDA apuShadow400E,y 
+	STA $400E  
 
 
 

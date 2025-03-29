@@ -2,6 +2,7 @@
  ![](SabreLogo.png)
  
  Sabre is a lightweight sound driver for NES homebrew projects, compatible with [FamiTracker](https://github.com/Dn-Programming-Core-Management/Dn-FamiTracker "Dn-FamiTracker GitHub Page") TXT export data. 
+ FamiStudio export compatibility is not officially supported at this time.
  
  Written for [ASM6 / ASM6F](https://github.com/freem/asm6f "ASM6F GitHub Page") and [CA65](https://github.com/cc65/cc65 "CC65 GitHub Page") assemblers.
  
@@ -16,18 +17,18 @@
  - BXX for arbitrary loop points
  - C00 for non-looping tracks
  - D00 for variable pattern length
- - FXX for variable playback rate
- - ZXX for setting DMC line level ($4011)
+ - FXX for variable playback rate (Speed only!!)
+ - ZXX for setting DMC delta counter ($4011)
  - 63 instruments (255 unique envelopes total)
  - 256 tracks
  - 256 SFX 
  - 128 patterns per track 
  - 1 pattern per SFX
  - NTSC, PAL, and Dendy tempo & period adjustments
- - Linear counter trill for Triangle channel
+ - Linear counter trill effect for Triangle channel
  
 ## Requirements:
- - 1753 bytes ROM
+ - 1699 bytes ROM
  - 42 bytes ZP RAM
  - 121 bytes non-ZP RAM 
  
@@ -42,7 +43,7 @@
  - Do not expand effect columns to more than 1 effect per channel
  - BXX, C00, and D00 should only be placed in the first active channel (left -> right)
  - FXX and ZXX will be clobbered by BXX, C00, or D00 on the same row
- - Enable Triangle linear counter trill effect by using volume values 1 - 3 in volume envelope.
+ - Use Triangle linear counter trill effect by using volume values 1 to 3 in volume envelope. (Optional)
  
 ## Sabre Replayer Controls:
  - D-Pad L/R: Change track index
@@ -90,8 +91,8 @@
 ### Build Flags in sabre\_includes.asm:
  - `UNOFFICIAL_OPS`: Enables use of unofficial CPU opcodes in the Sabre driver for slightly better performance. (AXS {#imm}, DCP {abs,y}, and LAX {zp}) May break compatibility with certain emulators and famiclones.
  - `BANKSWITCH_TRACKS`: Used by the Sabre replayer and driver to bankswitch each track's corresponding PRG bank.
- - `SFX_FLUSH`: Enable to completely flush old SFX channels when new SFX plays. Disable to keep untouched old SFX channels playing (EXPERIMENTAL! Old SFX will play at new SFX Speed and Tempo).
- - `LINEAR_COUNTER_TRILL`: Enables Linear Counter trill behavior on the Triangle channel. (Using volume values 1-3)
+ - `SFX_FLUSH`: Enable to completely flush old SFX channels when new SFX plays. Disable to keep untouched old SFX channels playing. (EXPERIMENTAL!! Old SFX will play at new SFX Speed and Tempo.)
+ - `LINEAR_COUNTER_TRILL`: Enables Linear Counter trill behavior on the Triangle channel. (Using volume values 1 to 3)
  - `MANUALLY_CLOCK_APU`: Enable to manually clock the APU Frame Counter before updating APU registers.
  - `ADJ_REGION_TEMPO_TRACK`: Enables tempo adjustment for music between NTSC, PAL, and Dendy regions.
  - `ADJ_REGION_TEMPO_SFX`: Enables tempo adjustment for SFX between NTSC, PAL, and Dendy regions. 
