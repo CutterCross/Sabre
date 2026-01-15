@@ -766,7 +766,7 @@ pulse2_regUpload:
 	STA $4006 
 	LDA apuShadow4007,y 
 	CMP apuLast4007 
-	BEQ triangle_regUpload:
+	BEQ triangle_regUpload
 	STA $4007 
 	STA apuLast4007 
 	
@@ -911,6 +911,15 @@ sabre_noteLengthTable:
 	.byte 64,98,128
 	.byte 0
 
+sabre_op_incChannelPatternOffsetAddr:
+	LDY sabreTemp 
+sabre_op_incChannelPatternOffsetAddr_skipY:
+	INC channel_patternOffsetAddr,x 
+	BNE @endInc16
+		INC channel_patternOffsetAddr+1,x
+@endInc16:
+	JMP getNextPatternByte
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 op_D00:
@@ -948,34 +957,20 @@ op_NLC:
 	LDA (channel_patternOffsetAddr,x)
 	LDY sabreTemp 
 	STA channelNoteDuration,y 
-	INC channel_patternOffsetAddr,x 
-	BNE @endInc16
-		INC channel_patternOffsetAddr+1,x
-@endInc16:
-	JMP getNextPatternByte
+	JMP sabre_op_incChannelPatternOffsetAddr_skipY
 
 op_FXX:
 	;; FXX - Set track speed with next byte 
 	LDA (channel_patternOffsetAddr,x)
 	STA trackSpeed
 	STA trackSpeedElapsed
-	INC channel_patternOffsetAddr,x 
-	BNE @endInc16
-		INC channel_patternOffsetAddr+1,x
-@endInc16:
-	LDY sabreTemp 
-	JMP getNextPatternByte
+	JMP sabre_op_incChannelPatternOffsetAddr
 
 op_ZXX:
 	;; ZXX - Set direct DMC load counter [$4011] with next byte
 	LDA (channel_patternOffsetAddr,x)
 	STA $4011
-	INC channel_patternOffsetAddr,x 
-	BNE @endInc16
-		INC channel_patternOffsetAddr+1,x
-@endInc16:
-	LDY sabreTemp 
-	JMP getNextPatternByte
+	JMP sabre_op_incChannelPatternOffsetAddr
 
 op_NUL:
 	;; NULL - Null note value. Skip to processing envelopes

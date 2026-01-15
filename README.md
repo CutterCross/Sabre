@@ -28,7 +28,7 @@
  - Linear counter trill effect for Triangle channel
  
 ## Requirements:
- - 1699 bytes ROM
+ - 1688 bytes ROM
  - 42 bytes ZP RAM
  - 121 bytes non-ZP RAM 
  
@@ -38,9 +38,11 @@
  - No envelopes larger than size 254
  - No Hi-Pitch envelopes 
  - No Release points for envelopes
+ - Do NOT use Fixed, Relative, or Scheme types on Arpeggio envelopes
+ - Do NOT use Absolute type on Pitch envelopes
  - Pitch envelopes have no effect on Noise channel
  - Non-looping Pitch envelopes should end with 0
- - Do not expand effect columns to more than 1 effect per channel
+ - Do NOT expand effect columns to more than 1 effect per channel
  - BXX, C00, and D00 should only be placed in the first active channel (left -> right)
  - FXX and ZXX will be clobbered by BXX, C00, or D00 on the same row
  - Use Triangle linear counter trill effect by using volume values 1 to 3 in volume envelope. (Optional)
@@ -101,6 +103,7 @@
  - Write channel patterns in ways which you can reuse them often.
  - Reuse instrument envelopes often.
  - Space out notes in ways that correspond to the common note lengths in `sabre_includes.asm`. (Example: NL4 = Next note in 4 rows)
+ - Each additional FT frame costs 2 extra bytes of data overhead per used channel. (All 5 channels used = 10 bytes overhead per FT frame.)
  - Contiguous notes with the same note length do not use redundant data.
  - Contiguous notes with the same instrument do not use redundant data.
  - Contiguous notes with the same note period do not use redundant data. (Exception: Following change in note length or FT effect)
