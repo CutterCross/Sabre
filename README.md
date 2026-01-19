@@ -8,7 +8,7 @@
  
 ## Features:
  - Note range: A0 - B7
- - Note cuts
+ - Note cuts (except for DMC)
  - Speed and tempo 
  - All 5 2A03 channels supported for music (Pulse 1, Pulse 2, Triangle, Noise, DMC)
  - SFX can use up to 4 channels at once (Pulse 1, Pulse 2, Triangle, Noise)
@@ -33,19 +33,21 @@
  - 121 bytes non-ZP RAM 
  
 ## Usage Notes:
- - Assign DPCM samples to 1 instrument only
- - No DPCM for SFX  
- - No envelopes larger than size 254
- - No Hi-Pitch envelopes 
- - No Release points for envelopes
- - Do NOT use Fixed, Relative, or Scheme types on Arpeggio envelopes
- - Do NOT use Absolute type on Pitch envelopes
- - Pitch envelopes have no effect on Noise channel
- - Non-looping Pitch envelopes should end with 0
- - Do NOT expand effect columns to more than 1 effect per channel
- - BXX, C00, and D00 should only be placed in the first active channel (left -> right)
- - FXX and ZXX will be clobbered by BXX, C00, or D00 on the same row
- - Use Triangle linear counter trill effect by using volume values 1 to 3 in volume envelope. (Optional)
+ - Assign DPCM samples to 1 instrument only.
+ - No DPCM for SFX.  
+ - Do NOT use note cuts on the DPCM channel. (Workaround: Use a terminating 17 byte sample made of all $00 bytes.)
+ - Do NOT place note cuts directly after another note cut in a channel.
+ - No envelopes larger than size 254.
+ - No Hi-Pitch envelopes. 
+ - No Release points for envelopes.
+ - Do NOT use Fixed, Relative, or Scheme types on Arpeggio envelopes.
+ - Do NOT use Absolute type on Pitch envelopes.
+ - Pitch envelopes have no effect on Noise channel.
+ - Non-looping Pitch envelopes should end with 0.
+ - Do NOT expand effect columns to more than 1 effect per channel.
+ - BXX, C00, and D00 should only be placed in the first active channel. (Left -> Right)
+ - FXX and ZXX will be clobbered by BXX, C00, or D00 on the same row.
+ - Use Triangle linear counter trill effect by using volume values 1 to 3 in volume envelope. (Optional: Can disable in `sabre_includes.asm`)
  
 ## Sabre Replayer Controls:
  - D-Pad L/R: Change track index
