@@ -28,9 +28,9 @@
  - Linear counter trill effect for Triangle channel
  
 ## Requirements:
- - 1688 bytes ROM
+ - 1694 bytes ROM
  - 42 bytes ZP RAM
- - 121 bytes non-ZP RAM 
+ - 122 bytes non-ZP RAM 
  
 ## Usage Notes:
  - Assign DPCM samples to 1 instrument only.
@@ -47,7 +47,7 @@
  - Do NOT expand effect columns to more than 1 effect per channel.
  - BXX, C00, and D00 should only be placed in the first active channel. (Left -> Right)
  - FXX and ZXX will be clobbered by BXX, C00, or D00 on the same row.
- - Use Triangle linear counter trill effect by using volume values 1 to 3 in volume envelope. (Optional: Can disable in `sabre_includes.asm`)
+ - Use Triangle linear counter trill effect by using volume values 1 to 3 in volume envelope. (Optional: Can disable in `sabre_includes.asm`) Command XXX has no effect.
  
 ## Sabre Replayer Controls:
  - D-Pad L/R: Change track index

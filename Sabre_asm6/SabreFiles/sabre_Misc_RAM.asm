@@ -58,7 +58,8 @@
 	currentTrack				.dsb 1
 	currentSFX					.dsb 1
 	currentTrackPRGbank			.dsb 1
+	sabrePlayRoutineLock		.dsb 1
 
-	;; 121 bytes non-ZP 
+	;; 122 bytes non-ZP 
 	
 	

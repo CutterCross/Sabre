@@ -50,6 +50,7 @@ sabre_initAPU:
 	LDA #0 						;; Won't be writing to $400F again
 	STA $400F 					;; But must be written once after Noise channel is enabled
 	STA currentTrackPRGbank		;; Set track PRG bank to 0 [Default]
+	STA sabrePlayRoutineLock	;; Initialize play routine lock to 0
 	LDX #23
 @loop_initTrackAddr_shadowAPUregs:
 	STA apuShadow4000,x 		;; Initialize shadow APU registers to 0
@@ -88,11 +89,12 @@ sabre_playTrack:
 	PHA
 	TYA 
 	PHA
+	INC sabrePlayRoutineLock
 	;; Check if this track index is valid
 	LDY currentTrack
 	CPY sabre_maxTracks
 	BCC @validTrackIndex
-		JMP endPlayTrack
+		JMP endSabrePlayRoutine
 @validTrackIndex:
 	;; Get all info from track header
 	LDA trackHeaderTable_lo,y 
@@ -107,32 +109,34 @@ sabre_playTrack:
 		JSR UNROM_bankswitchNoSave
 	.endif
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	LDY #0
-	LDA (pointer16),y
-	STA trackSpeed 
-	STA trackSpeedElapsed  
-	INY 
-	LDA (pointer16),y 
-	STA trackTempo 
-	LDA #0
-	STA trackCurrentPattern 
-	STA trackTempoElapsed
-	LDY #8
-	;; Zero out instruments and envelope steps
+	LDY #8+2
+    LDA #0
+    TAX 
 @loop_clearInstEnvelopes:
+	;; Zero out instruments and envelope steps
+    DEY 
+    DEY
 	STA channelInstrument,y 
 	STA channelVolEnvelopeStep,y 
 	STA channelArpEnvelopeStep,y
 	STA channelPitchEnvelopeStep,y 
-	DEY 
-	DEY 
-	BPL @loop_clearInstEnvelopes
+	BNE @loop_clearInstEnvelopes
 	STA channelDutyEnvelopeStep+2
 	STA noiseDutyEnvelopeStep
-
-	LDY #1
-	STY channelNoteCountdown	;; Set 1 to channel countdown timers	
-	STY channelNoteCountdown+2	;; So starting note will occur on next tick
+    ;; Y is 0
+    STY trackCurrentPattern
+    STY trackTempoElapsed
+    ;; 
+    LDA (pointer16),y
+    STA trackSpeed 
+    STA trackSpeedElapsed  
+    INY 
+    LDA (pointer16),y 
+    STA trackTempo 
+    ;; Y is 1, set 1 to channel countdown timers
+    ;; so starting note will occur on next tick
+    STY channelNoteCountdown
+	STY channelNoteCountdown+2
 	STY channelNoteCountdown+4
 	STY channelNoteCountdown+6
 	STY channelNoteCountdown+8
@@ -140,7 +144,7 @@ sabre_playTrack:
 	LDA (pointer16),y 
 	STA trackMaxPatterns
 	INY 
-	LDX #0
+    ;; X is 0
 setChannelTrackAddresses:
 	LDA (pointer16),y 
 	STA channel_trackAddr,x		;; lo byte
@@ -161,13 +165,13 @@ setChannelTrackAddresses:
 	BCC setChannelTrackAddresses
 	LDY #0
 	JSR setChannelPatternAddresses
-	;; Silence all channels
+    ;; Silence all channels
 	LDA #0
 	STA apuShadow4000
 	STA apuShadow4004
 	STA apuShadow400C
 	STA $4011
-	LDA #$80
+	ROR     ;; A is now $80
 	STA apuShadow4008
 	STA apuLast4003
 	STA apuLast4007
@@ -177,12 +181,7 @@ setChannelTrackAddresses:
 	;;;; Custom return bankswitch here, if needed
 
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-endPlayTrack:
-	PLA 
-	TAY
-	PLA 
-	TAX
-	RTS
+	JMP endSabrePlayRoutine
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -191,10 +190,11 @@ sabre_playSFX:
 	PHA
 	TYA 
 	PHA 
+	INC sabrePlayRoutineLock
 	;; Check if this SFX index is valid
 	LDY currentSFX
 	CPY sabre_maxSFX
-	BCS endPlaySFX
+	BCS endSabrePlayRoutine
 	;; Get all info from track header
 	LDA sfxHeaderTable_lo,y 
 	STA pointer16 
@@ -272,7 +272,7 @@ setChannelSFXaddresses:
 		CPY #CHANNEL_SFX_NOISE+2
 		BNE @notNoiseChannel
 			STA noiseDutyEnvelopeStep+1
-			BEQ endPlaySFX
+			BEQ endSabrePlayRoutine
 	@notNoiseChannel:
 		STA channelPitchEnvelopeStep-2,y 
 		CPY #CHANNEL_SFX_PULSE2+2 
@@ -293,7 +293,8 @@ setChannelSFXaddresses:
 .endif
 	CPY #9
 	BCC setChannelSFXaddresses
-endPlaySFX:
+endSabrePlayRoutine:
+	DEC sabrePlayRoutineLock
 	PLA 
 	TAY 
 	PLA 
@@ -351,8 +352,10 @@ setChannelPatternAddresses:
 
 sabre_soundUpdate:
 	LDA regionTickRate_track
+	ORA sabrePlayRoutineLock
 	BNE @validTickRate
 		RTS		;; In case update called before sabre_initAPU finishes
+				;; OR if interrupting a Sabre play routine [update-in-NMI setup]
 @validTickRate:
 	TXA 
 	PHA 
@@ -798,8 +801,6 @@ noise_regUpload:
 	STA $400C 
 	LDA apuShadow400E,y 
 	STA $400E  
-
-
 
 updateTrackSpeed:
 	LDA trackSpeedElapsed
