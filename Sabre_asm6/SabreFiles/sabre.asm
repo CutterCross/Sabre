@@ -351,11 +351,14 @@ setChannelPatternAddresses:
 ;; 8 - DMC
 
 sabre_soundUpdate:
+	LDA sabrePlayRoutineLock
+	BNE @abort 
+@safeToUpdate:
 	LDA regionTickRate_track
-	ORA sabrePlayRoutineLock
 	BNE @validTickRate
-		RTS		;; In case update called before sabre_initAPU finishes
-				;; OR if interrupting a Sabre play routine [update-in-NMI setup]
+@abort:
+	RTS		;; In case update called before sabre_initAPU finishes
+			;; OR if interrupting a Sabre play routine [update-in-NMI setup]
 @validTickRate:
 	TXA 
 	PHA 
