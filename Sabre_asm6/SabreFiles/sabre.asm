@@ -353,7 +353,6 @@ setChannelPatternAddresses:
 sabre_soundUpdate:
 	LDA sabrePlayRoutineLock
 	BNE @abort 
-@safeToUpdate:
 	LDA regionTickRate_track
 	BNE @validTickRate
 @abort:
@@ -870,7 +869,10 @@ sabre_stopTrack:
 	DEY 
 	DEY 
 	BPL @loop_clearEnvelopes
-	;; Clear track volume registers
+	PLA 
+	TAY
+clearShadowVolumeRegisters:
+	LDA #0
 	STA apuShadow4000
 	STA apuShadow4004
 	STA apuShadow4008
@@ -878,8 +880,6 @@ sabre_stopTrack:
 	;; Stop DMC 
 	LDA #%00001111
 	STA $4015
-	PLA 
-	TAY
 	RTS
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -889,16 +889,7 @@ sabre_pauseTrack:
 	LDA sabrePauseStatus
 	EOR #$FF 
 	STA sabrePauseStatus
-	BNE @return
-		;; Paused - clear volume registers
-		STA apuShadow4000
-		STA apuShadow4004
-		STA apuShadow4008
-		STA apuShadow400C
-		;; Stop DMC 
-		LDA #%00001111
-		STA $4015
-@return:
+	BEQ clearShadowVolumeRegisters	;; Clear volume registers if paused
 	RTS
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

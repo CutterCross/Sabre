@@ -58,7 +58,7 @@
 	currentTrack:				.res 1
 	currentSFX:					.res 1
 	currentTrackPRGbank:		.res 1
-	sabrePlayRoutineLock		.res 1
+	sabrePlayRoutineLock:		.res 1
 
 	;; 122 bytes non-ZP 
 	

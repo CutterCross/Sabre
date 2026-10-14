@@ -28,7 +28,7 @@
  - Linear counter trill effect for Triangle channel
  
 ## Requirements:
- - 1694 bytes ROM
+ - 1681 bytes ROM
  - 42 bytes ZP RAM
  - 122 bytes non-ZP RAM 
  
